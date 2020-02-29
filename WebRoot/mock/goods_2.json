@@ -1,0 +1,27 @@
+{
+	"id": 0,
+	"title": "空调清洗",
+	"text": "日常的全屋保洁+擦窗，物超所值",
+	"type": 1,
+	"banner": "../assets/images/goods_banner.png",
+	"price": 40,
+	"price_list": {
+		"time_title": "服务项目",
+		"price_title": "服务价格",
+		"list": [
+			{
+				"time": "挂式空调",
+				"price": "120"
+			},
+			{
+				"time": "柜式空调",
+				"price": "150"
+			},
+			{
+				"time": "中央空调",
+				"price": "100"
+			}
+		]
+	},
+	"des_img": "../assets/images/goods_2.jpg"
+}

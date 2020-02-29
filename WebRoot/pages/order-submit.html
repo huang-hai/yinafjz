@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<title>订单确认</title>
+	<link rel="stylesheet" type="text/css" href="../assets/css/amazeui.min.css">
+	<link rel="stylesheet" type="text/css" href="../assets/css/app.css">
+	<link rel="stylesheet" type="text/css" href="../assets/css/message.css">
+	
+	<style type="text/css">
+		.disabled{
+			pointer-events: none;
+		}
+	</style>
+</head>
+<body style="width: 100%; height: 100%; background-color: #f4f4f4;">
+	<!-- header -->
+	<header data-am-widget="header" class="am-header am-header-default index-header-green">
+		<div class="am-header-left am-header-nav" id="to_goodsList" onclick="history.go(-1)">
+			<a href="javascript:;" class=""><i class="am-header-icon am-icon-angle-left index-icon-left"></i></a>
+		</div>
+		<h1 class="am-header-title"><a href="#title-link" class="index-title-font">订单确认</a></h1>
+		<div class="am-header-right am-header-nav"></div>
+	</header>
+  	<!-- header end -->
+  	<input type="hidden" id="orderId" value="0">
+  	
+  	<!-- content -->
+	<div class="os-wrap">
+		<div class="server-address">
+			<span><i class="am-icon-map-marker am-icon-fw"></i>服务地址</span>
+			<span class="to-address-select">请选择服务地址</span>
+			<input type="hidden" id="communityId">
+			<span><i class="am-icon-angle-right"></i></span>
+		</div>
+		<div class="server-timeRange">
+			<span><i class="am-icon-hourglass-o am-icon-fw"></i>服务时长</span>
+			<span class="server-range-span to-time-range">请选择服务时长</span>
+			<span><i class="am-icon-angle-right to-time-range" ></i></span>
+		</div>
+		<div class="server-time">
+			<span><i class="am-icon-clock-o am-icon-fw"></i>服务时间</span>
+			<span class="server-time-span to-time-select">请选择服务时间</span>
+			<span class="to-time-select"><i class="am-icon-angle-right "></i></span>
+		</div>
+	</div>
+	<div class="order-goods-wrap">
+		<ul class="ogs-list">
+			<!-- <h4>请选择空调清洗类型</h4>
+			商品类型数量选择
+			<!-- <li class="ogs-item">
+				<div class="img-wrap">
+					<img src="../assets/images/c_1.png" alt="">
+				</div>
+				<div class="ogs-des">
+					<span>挂式空调</span>
+					<span class="price">120.0元/台</span>
+				</div>
+				<div class="ogs-num">
+					<span class="num-span minus">-</span>
+					<span class="num-span green">0</span>
+					<span class="num-span add">+</span>
+				</div>
+			</li>
+			<li class="ogs-item">	
+				<div class="img-wrap">
+					<img src="../assets/images/c_1.png" alt="">
+				</div>
+				<div class="ogs-des">
+					<span>挂式空调</span>
+					<span class="price">120.0元/台</span>
+				</div>
+				<div class="ogs-num">
+					<span class="num-span minus">-</span>
+					<span class="num-span green">1</span>
+					<span class="num-span add">+</span>
+				</div>
+			</li>
+			<li class="ogs-item">
+				<div class="img-wrap">
+					<img src="../assets/images/c_1.png" alt="">
+				</div>
+				<div class="ogs-des">
+					<span>挂式空调</span>
+					<span class="price">120.0元/台</span>
+				</div>
+				<div class="ogs-num">
+					<span class="num-span minus">-</span>
+					<span class="num-span green">0</span>
+					<span class="num-span add">+</span>
+				</div>
+			</li> -->
+			<li class="line">保洁员由系统自动分配</li>
+			<li class="line">
+				<span><img src="../assets/images/count.png" alt="" width="auto" height="15">优惠券</span>
+				<span class="am-fr">暂无可用优惠券 <i class="am-icon-angle-right"></i></span>
+			</li>
+			<li class="ogs-count am-fr" >合计： ￥<i id="result_price">150</i></li>
+		</ul>
+		<!-- 备注 -->
+		<div class="order-remarks">
+			<label for="remarks">备注：</label>
+			<textarea name="remarks" id="remarks" placeholder="（选填）"></textarea>
+		</div>
+		<p><a href="JavaScript:;">点击立即支付视为同意《颐纳福协议》</a></p>
+	</div>
+	
+	<!-- 创建form表单 -->
+	<form id="form">
+		<input type="hidden" name="itemId">
+	    <input type="hidden" name="itemName">
+	    <input type="hidden" name="type">
+	    <input type="hidden" name="customer"> 
+	    <input type="hidden" name="phone">    
+	    <input type="hidden" name="region">   
+	    <input type="hidden" name="address">  
+	    <input type="hidden" name="origin" value="3">
+	    <input type="hidden" name="userId">
+	    <input type="hidden" name="serviceTime">
+	    <input type="hidden" name="totalMoney">
+	    <input type="hidden" name="discounts" value="0">
+	    <input type="hidden" name="actualPayment">
+	    <input type="hidden" name="remark" id="remark">
+	</form>
+	
+	<!-- content end -->
+	<!-- 支付 --> 
+	<div class="order-submit-footer">
+		<span><i>实付款：</i><b id="total_price"></b></span>
+		<a href="javascript:;" id="pay_btn">立即支付</a>
+	</div>
+
+	<!-- 时长选择 -->
+	<div class="masker" id="masker"></div>
+	<div class="range-slider">
+		<p><span>请选择服务时长</span> <i class="am-fr" id="close_time">&#215;</i></p>
+		<ul id="range_panel">
+			<!-- <li>
+				<span class="time">2小时</span>
+				<span>&#165;<i>400</i></span>
+			</li>
+			<li>
+				<span class="time">3小时</span>
+				<span>&#165;<i>600</i></span>
+			</li>
+			<li>
+				<span class="time">4小时</span>
+				<span>&#165;<i>800</i></span>
+			</li> -->
+		</ul>
+	</div>
+	<!-- 时长选择 end -->
+
+	<!-- 预约服务 -->
+	<div class="appointment-wrap">
+		<!-- header -->
+		<header data-am-widget="header" class="am-header am-header-default index-header-green">
+			<div class="am-header-left am-header-nav" id="nav_back"">
+				<a href="javascript:;" class=""><i class="am-header-icon am-icon-angle-left index-icon-left"></i></a>
+			</div>
+			<h1 class="am-header-title"><a href="pages/address.html" class="index-title-font">选择服务时间</a></h1>
+			<div class="am-header-right am-header-nav"></div>
+		</header>
+	  	<!-- header end -->
+	  	<!-- content -->
+		<div class="appointment-content">
+			<ul class="date-wrap">
+				<!-- <li class="active">
+					<span>今天</span>
+					<span>11月27日</span>
+				</li>
+				<li>
+					<span>今天</span>
+					<span>11月27日</span>
+				</li>
+				<li>
+					<span>今天</span>
+					<span>11月27日</span>
+				</li>
+				<li>
+					<span>今天</span>
+					<span>11月27日</span>
+				</li>
+				<li>
+					<span>今天</span>
+					<span>11月27日</span>
+				</li>
+				<li>
+					<span>今天</span>
+					<span>11月27日</span>
+				</li>	
+				<li>
+					<span>今天</span>
+					<span>11月27日</span>
+				</li> -->
+			</ul>
+		</div>
+		<ul class="time-wrap">
+			<!-- 满员 time-full-->
+			<!-- 选中 active-->
+			<!-- <li class="time-full">10:00</li>
+			<li>11:00</li>
+			<li>13:00</li>
+			<li>14:00</li>
+			<li>15:00</li>
+			<li>16:00</li>
+			<li></li>
+			<li></li>
+			<li>10:00-12:00</li> -->
+		</ul>
+		  <!-- content end -->
+		<!-- 预约按钮 -->
+		<!-- 注意事项 -->
+		<div class="attention-wrap">
+			<span>注意事项</span>
+			<span>如需变更预约服务时间，请您至少提前1天与客服沟通，以免造成违约损失</span>
+		</div>
+		<button type="button" class="am-btn am-btn-primary am-btn-block sure-btn">确定预约</button>
+	</div>
+	<!-- 预约服务 end -->
+
+	<script src="../assets/js/jquery.js"></script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script src="../assets/js/popups.js"></script>
+	<script src="../assets/js/common.js"></script>
+	<script src="../assets/js/dateSelect.js"></script>
+	<script src="../assets/js/app_path.js"></script>
+	<script src="../assets/js/fastclick.js"></script>
+	<script src="../assets/js/jquery.cookie.js"></script>
+
+	<script>
+		
+		$(function () {
+			FastClick.attach(document.body);
+			var orderId = window.localStorage.getItem("orderId");
+			if(orderId != null){
+				//已经生成订单 跳转
+				window.localStorage.removeItem("orderId");
+				jqtoast("已生成订单，正在为你跳转");
+				setTimeout(function(){
+					window.location.href = 'order-details.html?orderId=' + orderId;
+				},2000);
+			}
+			itemId = getUrlParam("itemId");
+			userId = getUser();
+			//jqtoast("用户ID" + userId);
+			console.log("用户标识：" + userId);
+			if(userId == 0){
+				jqtoast("您还未登录，请登录");
+				return;
+			}
+			
+			//默认是空调类型
+			var submitType = 1;
+			//var type = $("input[name='type']").val();
+			//if(type == "true"){
+			//	//是服务时长类型
+			//	submitType = 2;
+			//}
+			
+			//获取用户的默认地址
+			function getDefaultAddr(){
+				var url = "/user/findDefaultAddrByUserId?userId="+userId+"&"+Math.random();
+				var type = "GET";
+				var params = {};
+				jsAjax(type,url,"",defaultAddrCallBack,params,true);
+			}
+			
+			function defaultAddrCallBack(res) {
+				if(res.code == 200){
+					if(res.obj != null){
+						var obj = res.obj;
+						var address = obj.region.replace(/-/g,"") + obj.communityName + obj.address;
+						$("input[name='customer']").val(obj.receiver); 
+						$("input[name='phone']").val(obj.phone)   ; 
+						$("input[name='region']").val(obj.region)  ; 
+						$("input[name='address']").val(obj.communityName + obj.address) ; 
+						$("#communityId").val(obj.communityId);
+						$(".to-address-select").html("<a href=\"###\"></a>" + address);
+					}
+				}
+			}
+			
+			getDefaultAddr();
+			
+			// 获取商品信息
+			function getGoodsList() {
+				var url = "/service/findDetailByItemId?itemId="+itemId+"&"+Math.random();
+				var type = "GET";
+				var params = {};
+				jsAjax(type,url,"",goodsListCallBack,params,true);
+			}
+			
+			function goodsListCallBack(res) {
+				if(res.code == 200){
+					var sb = "";
+					var sm = "";
+					$("input[name='itemId']").val(res.obj.itemId);
+					$("input[name='itemName']").val(res.obj.itemName);
+					$("input[name='type']").val(res.obj.type);
+					var type = res.obj.type;
+					if(type){
+						submitType = 2;
+					}
+					if( submitType == 1) {
+						//空调类型(没有服务时长)
+						//priceList_1 += "<li class=\"ogs-item\"><div class=\"img-wrap\"><img src=\"" + item.img + "\" alt=\"\"></div><div class=\"ogs-des\"><span>" + item.name + "</span><span class=\"price\">" + item.price + "\u5143/\u53F0</span></div><div class=\"ogs-num\"><span class=\"num-span minus\">-</span><span class=\"num-span green\">0</span><span class=\"num-span add\">+</span></div>\n</li>";
+						sb += "<h4>请选择空调清洗类型</h4>";
+						$.each(res.obj.details,function(index,obj){
+							sb += "<li class=\"ogs-item\">                                 ";
+							sb += "	<div class=\"img-wrap\">                               ";
+							sb += "		<img src=\""+obj.attrPic+"\" alt=\"\">      ";
+							sb += "	</div>                                               ";
+							sb += "	<div class=\"ogs-des\">                                ";
+							sb += "		<span>"+obj.type+"</span>                            ";
+							sb += "		<span class=\"price\">"+obj.price+"元</span>            ";
+							sb += "	</div>                                               ";
+							sb += "	<div class=\"ogs-num\">                                ";
+							sb += "		<span class=\"num-span minus\">-</span>            ";
+							sb += "		<span class=\"num-span green\" >0</span>            ";
+							sb += "		<span class=\"num-span add\">+</span>              ";
+							sb += "	</div>                                               ";
+							
+							sb += "	<div class=\"flag\">                                               ";
+							sb += "     <input type=\"hidden\" name=\"name\" value=\""+obj.type+"\" />";
+							sb += "     <input type=\"hidden\" name=\"pic\" value=\""+obj.attrPic+"\" />";
+							sb += "     <input type=\"hidden\" name=\"price\" value=\""+obj.price+"\" />";
+							sb += "     <input type=\"hidden\" name=\"dtId\" value=\""+obj.detailId+"\" />";
+							sb += "	</div>                                               ";
+							sb += "</li>                                                 ";
+						});
+					} else if( submitType == 2) {
+						var prices = new Array();
+						sb += "<li class=\"ogs-item ogs-item-2\">                               ";
+						sb += "	<div class=\"img-wrap\">                                      ";
+						sb += "		<img src=\""+ res.obj.pic +"\" alt=\"\">                      ";
+						sb += "	</div>                                                          ";
+						sb += "	<div class=\"ogs-des\">                                           ";
+						sb += "		<span>"+res.obj.itemName+"</span>                       ";
+						$.each(res.obj.details,function(index,obj){
+							sm += "<li>                                                           ";
+							sm += "	<span class=\"time\" dtId=\""+obj.detailId+"\">"+obj.type+"</span>                               ";
+							sm += "	<span>&#165;<i>"+obj.price+"</i></span>                                 ";
+							sm += "</li>                                                          ";
+							prices.push(obj.price);
+						});                           
+						sb += "		<span class=\"price\">"+findMin(prices)+"\u5143\u8D77</span>   ";
+						sb += "	</div>                                                          ";
+						sb += "</li>   ";
+					}
+					$(".ogs-list").prepend(sb);
+					$("#range_panel").append(sm);
+					// 日常清洁订单类型下显示服务时间
+					if(submitType == 2){
+						$('.server-timeRange').show()
+					} else {
+						$('.server-timeRange').hide()
+					}
+				} else {
+					console.log(res.msg);
+				}
+			}
+			getGoodsList();
+			
+
+			// 返回上一级
+			function goBack() {
+				/*$('#to_goodsList').on('click', function () {
+					window.location.href = 'goods-detail.html?id=' + goodsId;
+				})*/
+			}
+			goBack()
+
+			// 地址选择
+			$('.to-address-select').on('click', function () {
+				window.location.href = 'address.html'
+			})
+
+			
+			// 日期选择
+			function timeSelectClick () {
+				$('.to-time-select').on('click', function () {
+					if(submitType == 2 && $('.server-range-span').text() == '请选择服务时长'){
+						jqtoast('请选择服务时长')
+					} else {
+						let selRange = parseInt($('.server-range-span').text())
+						if(submitType==2){
+							getTimeList(submitType,selRange)
+						} else {
+							getTimeList(submitType)
+						}
+						$('.appointment-wrap').show()
+						// 日期选择（传入类型和选择时间和时间范围）
+						dateSelect(submitType, selRange)
+						// 时间选择
+						timeSelect()
+					}
+				})
+			}
+			timeSelectClick()
+			
+			// 确认预约日期
+			$('.sure-btn').on('click', function () {
+				let date = $('.date-wrap li.active').text();
+				let time =$('.time-wrap li.active').text();
+				let date_hide = $('.date-wrap li.active').attr("date");
+				
+				if(!time) {
+					jqtoast('请选择预约时间')
+				} else if(date && time) {
+					$('.server-time-span').text(date+time);
+					$('.appointment-wrap').hide();
+					
+					var serverTime = "";
+					if(time.indexOf("~") != -1){
+						//时间段
+						var times = time.split("~");
+						serverTime = date_hide + " " + times[0] + ":00 ~ " + date_hide + " " + times[1] + ":00";
+					} else {
+						serverTime = date_hide + " " + time + ":00";
+					}
+					//设置服务时间
+					$("input[name='serviceTime']").val(serverTime);
+				}
+			})
+			
+			// 确认预约日期返回，可以不判断是否选择直接返回
+			$('#nav_back').on('click', function () {
+				let date = $('.date-wrap li.active').text();
+				let time =$('.time-wrap li.active').text();
+				let date_hide = $('.date-wrap li.active').attr("date");
+				if(date && time) {
+					$('.server-time-span').text(date+time);
+					$('.appointment-wrap').hide();
+					
+					var serverTime = "";
+					if(time.indexOf("~") != -1){
+						//时间段
+						var times = time.split("~");
+						serverTime = date_hide + " " + times[0] + ":00~" + date_hide + " " + times[1] + ":00";
+					} else {
+						serverTime = date_hide + " " + time + ":00";
+					}
+					//设置服务时间
+					$("input[name='serviceTime']").val(serverTime);
+				} else {
+					$('.appointment-wrap').hide()
+				}
+			})
+
+			// 日期选择返回订单确认
+			/*$('#to_goodsList').on('click', function () {
+				$('.appointment-wrap').hide()
+			})*/
+
+
+
+			// 获取选择日期
+			/*function getDate () {
+				let date = localStorage.getItem('serverDate') 
+				let time = localStorage.getItem('serverTime')
+				time && date ? $('.server-time-span').html(date+time).addClass('active'): $('.server-time-span').html('请选择服务时间').removeClass('active')
+			}
+			getDate()*/
+
+			// 选择服务时长
+			$('.to-time-range').on('click', function () {
+				$('#masker').show()
+				$('.range-slider').animate({bottom: '0'})
+			})
+
+			function rangeHide () {
+				$('#masker').hide()
+				$('.range-slider').animate({bottom: '-50%'})
+			}
+
+			// 关闭服务时长
+			$('#close_time').on('click', function () {
+				rangeHide()
+			})
+			$(window).on('click', function (e){
+				var target = $(e.target)
+				if(target.is('#masker')){
+					rangeHide()
+				}
+			})
+
+			// 服务时长选择 2小时、3小时。。。
+			function rangeClick () {
+				$('#range_panel').on('click', 'li', function (){
+					$(this).addClass('active').siblings().removeClass('active');
+					$('.server-range-span').html($(this).children('.time').text()).addClass('active');
+					var price = $(this).children('.time').next("span").children("i").text();
+					$(".price").html(price + "元");
+					$("input[name='totalMoney']").val(price);
+					$("input[name='actualPayment']").val(price);
+					$("#result_price").html(price);
+					$("#total_price").html("￥"+price);
+					//先移除 在添加
+					$("input[name='names']").remove();
+					$("input[name='prices']").remove();
+					$("input[name='pics']").remove();
+					$("input[name='dtIds']").remove();
+					$("input[name='nums']").remove();
+					//服务时间清空
+					$("input[name='serviceTime']").val("");
+					$('.server-time-span').html("请选择服务时间");
+					var sb = "<input type=\"hidden\" class=\"names\" name=\"names\" value=\""+$(this).children('.time').text()+"\">";
+					 sb += "<input type=\"hidden\" class=\"prices\" name=\"prices\" value=\""+price+"\">";
+					 sb += "<input type=\"hidden\" class=\"pics\" name=\"pics\" value=\""+$(".img-wrap").children("img").attr("src")+"\">";
+					 sb += "<input type=\"hidden\" class=\"dtIds\" name=\"dtIds\" value=\""+$(this).children('.time').attr("dtId")+"\">";
+					 sb += "<input type=\"hidden\" class=\"nums\" name=\"nums\" value=\"1\">";
+					 $("#form").append(sb);
+				}) 
+			}
+
+			rangeClick()
+
+
+			// 加号
+			function add () {
+				$('.ogs-list').on('click', '.add', function () {
+					var num = $(this).prev('.green').html()
+					num++;
+					$(this).prev('.green').html(num++)
+					totalPrice()
+				})
+			}
+			add()
+
+			// 减号
+			function minus () {
+				$('.ogs-list').on('click', '.minus', function () {
+					var num = $(this).next('.green').html()
+					num--;
+					if(num<0){
+						jqtoast('不能再少啦！')
+					} else {
+						$(this).next('.green').html(num--)
+						totalPrice()
+					}
+				})
+			}
+			minus()
+
+			// 合并结算
+			function totalPrice () {
+				if( submitType == 1) {
+					// 有按钮
+					var str = $('.ogs-list .ogs-item');
+					var numList = []
+					var priceList = []
+					var result = 0
+					for(var i = 0; i<str.length; i++) {
+						var price = parseFloat(str.eq(i).find('.price').text())
+						priceList.push(price)
+						var num = Number(str.eq(i).find('.green').text())
+						numList.push(num)
+					}
+					for(var x = 0; x<numList.length; x++) {
+						result += numList[x]*priceList[x]
+					}
+					$('#result_price').text(result.toFixed(2))
+					$('#total_price').text('￥'+ result.toFixed(2))
+				} else if ( submitType == 2) {
+					$('#result_price').text(0)
+					$('#total_price').text('￥'+ 0)
+				}
+			}
+
+			totalPrice()
+
+			// 去付款
+			$('#pay_btn').on('click', function () {
+				//检查数据是否完整
+				var customer = $("input[name='customer']").val();
+				var phone = $("input[name='phone']").val();
+				var region = $("input[name='region']").val();
+				var address = $("input[name='address']").val();
+				var serverTime = $("input[name='serviceTime']").val();
+				$("#remark").val($("#remarks").val());
+				//alert($("#remarks").val());
+				if( !customer || !phone || !(/^1[345678]\d{9}$/.test(phone)) || !region || !address){
+				    jqtoast('请选择地址');
+				    return;
+				}
+				
+				$("input[name='userId']").val(userId);
+				
+				// submitType=1 空调类型  选择时间地址范围后
+				// submitType=2 日常服务类型  选择时间地址范围后
+				if(submitType == 1) {
+				
+					if(!serverTime){
+					    jqtoast('请选择服务时间');
+						return;
+					}
+					
+					var num_els = $(".green");
+					var sb = "";
+					$("input[name='serviceTime']").val(serverTime);
+					$("input[name='totalMoney']").val($("#result_price").text());
+					$("input[name='discounts']").val(0);
+					var actualPayment = $("#total_price").text();
+					$("input[name='actualPayment']").val(actualPayment.substring(1,actualPayment.length));
+					
+					$.each(num_els,function(index,obj){
+						if($(obj).html() != 0){
+							sb += "<input type=\"hidden\" name=\"nums\" value=\""+$(obj).html()+"\" />";
+							var flag_els = $(obj).parent(".ogs-num").next(".flag");
+							sb += "<input type=\"hidden\" name=\"names\" value=\""+$(flag_els).children("input[name='name']").val()+"\" />";
+							sb += "<input type=\"hidden\" name=\"prices\" value=\""+$(flag_els).children("input[name='price']").val()+"\" />";
+							sb += "<input type=\"hidden\" name=\"pics\" value=\""+$(flag_els).children("input[name='pic']").val()+"\" />";
+							sb += "<input type=\"hidden\" name=\"dtIds\" value=\""+$(flag_els).children("input[name='dtId']").val()+"\" />";
+						}
+					});
+					$("#form").append(sb);
+					//判断订单属性是否有值
+					if($("input[name='nums']").length == 0 || $("input[name='names']").length == 0 
+					|| $("input[name='prices']").length == 0 || $("input[name='pics']").length == 0 
+					|| $("input[name='dtIds']").length == 0) {
+						jqtoast('请选择服务服务数量');
+						return;
+					}
+					
+				} else {
+					//服务时长类型
+					if($('.to-time-select').text() == '请选择服务时间'){
+						jqtoast('请选择服务时间')
+						return;
+					} else if($('.server-range-span').text() == '请选择服务时长'){
+						jqtoast('请选择服务时长')
+						return;
+					}
+					
+					if(!serverTime){
+						jqtoast('请选择服务时长和时间');
+						return;
+					}
+					
+					
+				}
+				
+				//禁用单击事件 防止表单重复提交
+				$("#pay_btn").addClass("disabled");
+				
+				
+				var url = "/order/addOrder";
+				var type = "POST";
+				console.log(form);
+				var data = $("#form").serialize();
+				var params = {};
+				jsAjax(type,url,data,addOrderCallBack,params,false);
+				
+			});
+			
+			function addOrderCallBack(res) {
+				//启用单击事件 防止表单重复提交
+				$("#pay_btn").removeClass("disabled");
+				if(res.code == 200){
+					window.localStorage.setItem("orderId",res.obj.orderId);
+					window.location.href = 'order-payment.html?orderId=' + res.obj.orderId;
+				} else {
+					jqtoast(res.msg);
+				}
+			}
+
+			/*
+		     * 参数说明：
+		     * array:传入数组 ,例如：var arr = [5,7,66,78,99,103,126,203,1];
+		     */
+		    function findMin(array){
+		        var _min = array[0];    //假设最小的数就是    array[0]
+		        var _indexMin = 0;        //假设最小的数的下标就是0
+		        for(var i=0;i<array.length;i++){
+		            if(array[i] < _min){ //如果其他元素大于我们假设的值，证明我们假设的值不是最小的
+		                _min = array[i]; //重置_min的值
+		                _indexMin = i;    
+		            }            
+		        } 
+		        return _min;        
+		    };
+		});
+	</script>
+</body>
+</html>

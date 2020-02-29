@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<title>消息通知</title>
+	<link rel="stylesheet" type="text/css" href="../assets/css/amazeui.min.css">
+	<link rel="stylesheet" type="text/css" href="../assets/css/app.css">
+	<link rel="stylesheet" type="text/css" href="../assets/css/dropload.css">
+	<link rel="stylesheet" type="text/css" href="../assets/css/message.css">
+</head>
+<body style="width: 100%; height: 100%; background-color: #f4f4f4;">
+	<!-- header -->
+	<header data-am-widget="header" class="am-header am-header-default index-header-green">
+		<div class="am-header-left am-header-nav" onclick="history.go(-1)">
+			<a href="javascript:;" class=""><i class="am-header-icon am-icon-angle-left index-icon-left"></i></a>
+		</div>
+		<h1 class="am-header-title"><a href="#title-link" class="index-title-font">消息通知</a></h1>
+		<div class="am-header-right am-header-nav"></div>
+	</header>
+  	<!-- header end -->
+  	<div class="message-content">
+  		<ul class="message-title">
+  			<!-- active 选中 hot热更新 -->
+  			<li class="active" type="1">平台通知</li>
+  			<li class="msg_2" type="0" state="1">交易提醒</li>
+  		</ul>
+  		<div class="message-list">
+  			<ul class="message-list-1 active list-group">
+  				<ul id="list_1">
+  					<!-- <li>
+	  					<span><i class="am-fl">疯狂最后12小时</i><i class="am-fr">2018-12-18</i></span>
+	  					<span><img src="../assets/images/news.jpg" alt="" width="90%" height="auto"></span>
+	  					<span>一键直购享最低价</span>
+	  				</li> -->
+  				</ul>
+  			</ul>	
+  			<ul class="message-list-2 list-group">
+  				<ul id="list_2">
+  					<!-- <li>
+	  					<span><i class="am-fl">您的订单已完成</i><i class="am-fr">2018-12-18</i></span>
+	  					<span>您的「柜式空调清洗」订单已经完成服务，请点击订单详情对本次服务评价。</span>
+	  				</li> -->
+  				</ul>
+  			</ul> 
+  		</div>
+  	</div>
+	<script src="../assets/js/jquery.js"></script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script src="../assets/js/dropload.min.js"></script>
+	<script src="../assets/js/common.js"></script>
+	<script src="../assets/js/jquery.cookie.js"></script>
+	<script src="../assets/js/popups.js"></script>
+	<script src="../assets/js/fastclick.js"></script>
+	<script src="../assets/js/app_path.js"></script>
+
+	<script>
+		$(function () {
+			FastClick.attach(document.body);
+			function tabChange () {
+				$('.message-title').on('click', 'li', function () {
+					$(this).addClass('active').siblings().removeClass('active')
+					$('.message-list ul.list-group').eq($(this).index()).addClass('active').siblings().removeClass('active')
+					getList($(this).attr("type"))
+				})
+			}
+			tabChange()
+
+			function getList (num) {
+				var userId = getUser();
+				//jqtoast("获取消息：" + userId);
+				if(userId == 0){
+					jqtoast("您还未登录，请登录");
+					return;
+				}
+				
+				var url = "/user/findMsgsByUserId?userId="+userId+"&type="+num+"&"+Math.random();
+				var type = "GET";
+				var params = {};
+				params["num"] = num;
+				jsAjax(type,url,"",listCallBack,params,true);
+				
+			}
+			getList(1)
+			
+			function listCallBack(res,params) {
+				var list = res.obj;
+				var listStr = '';
+				var num = params["num"];
+				// 如果没有消息 addClass('empty')
+				if(list.length == 0){
+					console.log("原生AJAX:" + res.obj.length);
+					$('.dropload-down').html("");
+					if(num == 1){
+						$('.message-list-1').addClass('empty')
+					} else {
+						$('.message-list-2').addClass('empty')
+					}
+				}
+				$.each(list, function (index, item){
+					if(num==1){
+						$('#list_1').html("")
+						listStr += "<li>     ";
+					  	listStr += "	<span><i class=\"am-fl\">"+item.msgTitle+"</i><i class=\"am-fr\">"+item.createTime+"</i></span>   ";
+					  	listStr += "	<span><img src=\""+item.msgImg+"\" alt=\"\" width=\"85%\" height=\"auto\"></span>  ";
+					  	listStr += "	<span>"+item.msgContent+"</span>     ";
+					  	listStr += "</li>";
+		  				
+					} else {
+						$('#list_2').html("")
+						//$('.dropload-down').html('<span>正在加载中</span><i class="am-icon-spinner am-icon-pulse"></i>')
+						listStr += "<li>               ";
+					  	listStr += "	<span><i class=\"am-fl\">"+item.msgTitle+"</i><i class=\"am-fr\">"+item.createTime+"</i></span>  ";
+					  	listStr += "	<span>"+item.msgContent+"</span>      ";
+					  	listStr += "</li>           ";
+					}   
+				})
+				setTimeout(function () {
+					
+					if(num == 1){
+						$('#list_1').append(listStr)
+					} else {
+						$('#list_2').append(listStr)
+					}
+					if(res.obj.length>=1) {
+						// 根据分页page判断
+						$('.dropload-down').html('-已经到底了-')
+					}
+				}, 500)
+				
+				if(num == 0){
+					//交易提醒
+					var state = $(".msg_2").attr("state");
+					if(state == 1){
+						markRead();
+					}
+				}
+			}
+			
+			function dropload(el) {
+				$(el).dropload({
+					scrollArea: window,
+					domDown: {
+						domClass: 'dropload-down',
+						domRefresh: '<div class="dropload-refresh">上拉加载更多</div>',
+						domLoad: '<div class="dropload-load"><span>正在加载中</span><i class="am-icon-spinner am-icon-pulse"></i></div>',
+						domNoData: '<div class="dropload-noData">-已经到底了-</div>'
+					},
+					loadDownFn: function loadDownFn(me) {
+						//   page++ 
+						// getList(me)
+					}
+				})
+			}
+
+			dropload('.message-list-1')
+			dropload('.message-list-2')
+			
+			function getNotReaderNum(){
+				var userId = getUser();
+				//jqtoast("获取未读数量：" + userId);
+				if(userId == 0){
+					jqtoast("您还未登录，请登录");
+					return;
+				}
+				
+				var url = "/user/findNotReaderNumByUserId?userId="+userId+"&"+Math.random();
+				var type = "GET";
+				jsAjax(type,url,"",NotReaderNumCallBack,true);
+				
+			}
+			
+			function NotReaderNumCallBack(res){
+				if(res.code == 200){
+					if(res.obj > 0){
+						$(".msg_2").addClass("hot");
+						$(".msg_2").attr("state",1);
+					} else {
+						$(".msg_2").removeClass("hot");
+						$(".msg_2").attr("state",0);
+					}
+				}
+			}
+			getNotReaderNum();
+			
+			function markRead(){
+				var userId = getUser();
+				//jqtoast("标为已读：" + userId);
+				if(userId == 0){
+					jqtoast("您还未登录，请登录");
+					return;
+				}
+				
+				var url = "/user/markRead";
+				var type = "POST";
+				var data = "userId="+userId+"&"+Math.random();
+				jsAjax(type,url,data,markReadCallBack,true);
+				
+			}
+			
+			function markReadCallBack(res){
+				if(res.code == 200){
+					$(".msg_2").attr("state",0);
+					$(".msg_2").removeClass("hot");
+				}
+			}
+		});
+	</script>
+</body>
+</html>

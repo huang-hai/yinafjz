@@ -1,0 +1,21 @@
+{
+	"type": 3,
+	"status": 0,
+	"img": "../assets/images/c_1.png",
+	"title": "日常保洁",
+	"time": "2小时",
+	"price": "400",
+	"count": 1,
+	"subscribe_time": "2018-11-22（周四）10:00-12:00",
+	"linkman": "罗伟3",
+	"phone": "15659202870",
+	"address": "海西百悦城二期1栋501",
+	"remark": "边角清洁干净",
+	"order_num": "152470083977561950",
+	"order_time": "2018-11-20 16:20:18",
+	"total_price": "400",
+	"discount": 0,
+	"pay_money": "400",
+	"server_name": "刘志兰",
+	"server_phone": ""
+}

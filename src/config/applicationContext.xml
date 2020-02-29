@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+    
+    <!-- 配置文件中仅仅这一行，component-scan表示要求Spring扫描base-package指定的路径下所有文件，有@Component注解的将自动加入Spring的Bean管理中 -->
+	<!-- 
+     spring2.5之后的版本引入了组件自动扫描的机制，可以采用在classpath自动扫描方式把classpath中所有的组件都纳入到spring 容器来进行管理。
+     但是这些类需要使用使用 @Service,@Controller, @Repository 这几个注解。它的作用与在xml文件中使用bean节点配置组件式一样的。
+    ·@Service用于标注业务层组件
+    ·@Controller用于标注控制层组件，比如struts中的action
+    ·@Repository用于标注数据访问组件，如DAO组件
+    ·@Component泛指组件，当组件不好归类的时候，我们可以使用它进行标注
+     -->
+     
+    <context:component-scan base-package="com.yinafjz.cleaning" >
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+    
+    <context:property-placeholder location="classpath:config/db.properties" ignore-unresolvable="true"/>
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${driverClassName}" />
+		<property name="url" value="${jdbc_url}" />
+		<property name="username" value="${jdbc_username}" />
+		<property name="password" value="${jdbc_password}" />
+		<property name="initialSize" value="10"></property>
+		<property name="maxActive" value="1000"></property>
+		<property name="maxIdle" value="300"></property>
+		<property name="minIdle" value="10"></property>
+		<property name="maxWait" value="10000"></property>
+		<property name="removeAbandoned" value="true" />
+		<property name="removeAbandonedTimeout" value="60" />
+		<property name="logAbandoned" value="true" />
+		<property name="testOnBorrow" value="true" />
+		<property name="testWhileIdle" value="true" />
+		<property name="validationQuery" value="select 1 from dual" />
+	</bean>
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+	</bean>
+	
+	<!--启动spring注解功能 -->
+	<!-- 注解方式定义事务（@Transactional），proxy-target-class="true"表示采用动态代理类来管理事务，如果是false表示采用接口代理来管理事务（默认值为false） -->
+	<tx:annotation-driven transaction-manager="transactionManager"
+		proxy-target-class="false" />
+	<aop:config>
+		<aop:pointcut id="txPointcut"
+			expression="execution(* com.yinafjz.cleaning.*.service.*.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" />
+	</aop:config>
+	<aop:aspectj-autoproxy />
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="add*" propagation="REQUIRED" />
+            <tx:method name="insert*" propagation="REQUIRED" />
+            <tx:method name="save*" propagation="REQUIRED" />
+            <tx:method name="update*" propagation="REQUIRED" />
+            <tx:method name="edit*" propagation="REQUIRED" />
+            <tx:method name="delete*" propagation="REQUIRED" />
+            <tx:method name="remove*" propagation="REQUIRED" />
+            <tx:method name="get*" propagation="SUPPORTS" />
+            <tx:method name="find*" propagation="SUPPORTS" />
+            <tx:method name="load*" propagation="SUPPORTS" />
+            <tx:method name="*" propagation="SUPPORTS" />
+		</tx:attributes>
+	</tx:advice>
+
+</beans>

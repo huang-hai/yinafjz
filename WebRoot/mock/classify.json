@@ -1,0 +1,147 @@
+[
+	{
+		"title": "家电清洗",
+		"banner": "assets/images/banner_2.png",
+		"content": [
+			{
+				"image": "assets/images/c_1.png",
+				"text": "空调"
+			}, {
+				"image": "assets/images/c_1.png",
+				"text": "空调"
+			}
+		]
+	},{
+		"title": "家居保养",
+		"banner": "assets/images/banner_2.png",
+		"content": [
+			{
+				"image": "assets/images/c_1.png",
+				"text": "冰箱"
+			}, {
+				"image": "assets/images/c_1.png",
+				"text": "冰箱"
+			}, {
+				"image": "assets/images/c_1.png",
+				"text": "冰箱"
+			}
+		]
+	},{
+		"title": "全屋保洁",
+		"banner": "assets/images/banner_2.png",
+		"content": [
+			{
+				"image": "assets/images/c_1.png",
+				"text": "洗衣机"
+			}, {
+				"image": "assets/images/c_1.png",
+				"text": "洗衣机"
+			}, {
+				"image": "assets/images/c_1.png",
+				"text": "洗衣机"
+			}, {
+				"image": "assets/images/c_1.png",
+				"text": "洗衣机"
+			}
+		]
+	},{
+		"title": "日常保洁",
+		"banner": "assets/images/banner_2.png",
+		"content": [
+			{
+				"image": "assets/images/c_1.png",
+				"text": "油烟机"
+			}, {
+				"image": "assets/images/c_1.png",
+				"text": "油烟机"
+			}, {
+				"image": "assets/images/c_1.png",
+				"text": "油烟机"
+			}
+		]
+	},{
+		"title": "除螨清洁",
+		"banner": "assets/images/banner_2.png",
+		"content": [
+			{
+				"image": "assets/images/c_1.png",
+				"text": "燃气灶"
+			}, {
+				"image": "assets/images/c_1.png",
+				"text": "燃气灶"
+			}, {
+				"image": "assets/images/c_1.png",
+				"text": "燃气灶"
+			}
+		]
+	},{
+		"title": "厨房清洁",
+		"banner": "assets/images/banner_2.png",
+		"content": [
+			{
+				"image": "assets/images/c_1.png",
+				"text": "空调"
+			}, {
+				"image": "assets/images/c_1.png",
+				"text": "空调"
+			}, {
+				"image": "assets/images/c_1.png",
+				"text": "空调"
+			}, {
+				"image": "assets/images/c_1.png",
+				"text": "空调"
+			}, {
+				"image": "assets/images/c_1.png",
+				"text": "空调"
+			}, {
+				"image": "assets/images/c_1.png",
+				"text": "空调"
+			}
+		]
+	},{
+		"title": "客厅保洁",
+		"banner": "assets/images/banner_2.png",
+		"content": [
+			{
+				"image": "assets/images/c_1.png",
+				"text": "客厅保洁"
+			}, {
+				"image": "assets/images/c_1.png",
+				"text": "客厅保洁"
+			}, {
+				"image": "assets/images/c_1.png",
+				"text": "客厅保洁"
+			}
+		]
+	},{
+		"title": "浴室保洁",
+		"banner": "assets/images/banner_2.png",
+		"content": [
+			{
+				"image": "assets/images/c_1.png",
+				"text": "浴室保洁"
+			}, {
+				"image": "assets/images/c_1.png",
+				"text": "浴室保洁"
+			}, {
+				"image": "assets/images/c_1.png",
+				"text": "浴室保洁"
+			}
+		]
+	},{
+		"title": "卧室保洁",
+		"banner": "assets/images/banner_2.png",
+		"content": [
+			{
+				"image": "assets/images/c_1.png",
+				"text": "卧室保洁"
+			}, {
+				"image": "assets/images/c_1.png",
+				"text": "卧室保洁"
+			}, {
+				"image": "assets/images/c_1.png",
+				"text": "卧室保洁"
+			}
+		]
+	}
+]

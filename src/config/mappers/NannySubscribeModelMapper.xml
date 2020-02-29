@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "htNannySubscribetp://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yinafjz.cleaning.nanny.dao.NannySubscribeModelMapper" >
+  <resultMap id="BaseResultMap" type="com.yinafjz.cleaning.nanny.model.NannySubscribeModel" >
+    <id column="subscribe_id" property="subscribeId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="nanny_id" property="nannyId" jdbcType="INTEGER" />
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
+    <result column="interview_type" property="interviewType" jdbcType="INTEGER" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    subscribe_id, user_id, nanny_id, time, interview_type, state, remark, create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from ynf_nanny_subscribe
+    where subscribe_id = #{subscribeId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ynf_nanny_subscribe
+    where subscribe_id = #{subscribeId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.yinafjz.cleaning.nanny.model.NannySubscribeModel" >
+    <selectKey resultType="java.lang.Integer" keyProperty="subscribeId" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ynf_nanny_subscribe (user_id, nanny_id, time, 
+      interview_type, state, remark, 
+      create_time)
+    values (#{userId,jdbcType=INTEGER}, #{nannyId,jdbcType=INTEGER}, #{time,jdbcType=TIMESTAMP}, 
+      #{interviewType,jdbcType=INTEGER}, #{state,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.yinafjz.cleaning.nanny.model.NannySubscribeModel" >
+    <selectKey resultType="java.lang.Integer" keyProperty="subscribeId" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ynf_nanny_subscribe
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="nannyId != null" >
+        nanny_id,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="interviewType != null" >
+        interview_type,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="nannyId != null" >
+        #{nannyId,jdbcType=INTEGER},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="interviewType != null" >
+        #{interviewType,jdbcType=INTEGER},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yinafjz.cleaning.nanny.model.NannySubscribeModel" >
+    update ynf_nanny_subscribe
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="nannyId != null" >
+        nanny_id = #{nannyId,jdbcType=INTEGER},
+      </if>
+      <if test="time != null" >
+        time = #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="interviewType != null" >
+        interview_type = #{interviewType,jdbcType=INTEGER},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where subscribe_id = #{subscribeId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yinafjz.cleaning.nanny.model.NannySubscribeModel" >
+    update ynf_nanny_subscribe
+    set user_id = #{userId,jdbcType=INTEGER},
+      nanny_id = #{nannyId,jdbcType=INTEGER},
+      time = #{time,jdbcType=TIMESTAMP},
+      interview_type = #{interviewType,jdbcType=INTEGER},
+      state = #{state,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where subscribe_id = #{subscribeId,jdbcType=INTEGER}
+  </update>
+
+  <select id="findSubscribeCountByNanny" resultType="int">
+    select count(*) from ynf_homemaking.ynf_nanny_subscribe
+    where nanny_id = #{nannyId} and state = 1
+  </select>
+</mapper>

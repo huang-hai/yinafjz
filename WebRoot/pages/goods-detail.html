@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<title>商品详情</title>
+	<link rel="stylesheet" type="text/css" href="../assets/css/amazeui.min.css">
+	<link rel="stylesheet" type="text/css" href="../assets/css/app.css">
+	<link rel="stylesheet" type="text/css" href="../assets/css/message.css">
+</head>
+<body style="width: 100%; height: 100%; background-color: #f4f4f4;">
+	<!-- 商品详情 -->
+	<div class="gd-wrap">
+		<!-- header -->
+		<header data-am-widget="header" class="am-header am-header-default index-header-green">
+			<div class="am-header-left am-header-nav" onclick="history.go(-1)">
+				<a href="javascript:;"><i class="am-header-icon am-icon-angle-left index-icon-left"></i></a>
+			</div>
+			<h1 class="am-header-title" id="header">
+				<!-- <a href="javascript:;" class="index-title-font">商品详情</a> -->
+			</h1>
+			<div class="am-header-right am-header-nav"></div>
+		</header>
+	  	<!-- header end -->
+		<input type="hidden" id="itemId">
+		<!-- content -->
+		<div class="gd-content">
+			<div class="gd-banner">
+				<!-- <img src="../assets/images/goods_banner.png" alt=""> -->
+			</div>
+			<div class="gd-title">
+				<!-- <h3>日常保洁</h3>
+				<span>日常的全屋保洁+擦窗，物超所值</span>
+				<span>&#165;40<i>起</i></span> -->
+			</div>
+			<dl class="gd-price">
+				<!-- <dt>
+					<span>时间</span>
+					<span>服务价格</span>
+					<span>建议房屋清洁面积</span>
+				</dt>
+				<dd>
+					<span>2小时</span>
+					<span>40.0元</span>
+					<span>2小时</span>
+				</dd>
+				<dd>
+					<span>2小时</span>
+					<span>40.0元</span>
+					<span>2小时</span>
+				</dd>
+				<dd>
+					<span>2小时</span>
+					<span>40.0元</span>
+					<span>2小时</span>
+				</dd> -->
+			</dl>
+			<div class="gd-des">
+				<h4><span>服务范围</span></h4>
+				<!-- <img src="../assets/images/goods_2.jpg" alt=""> -->
+			</div>
+			<div class="gd-safe">
+				<!-- <h4><span>服务保障</span></h4> -->
+				<img src="../assets/images/goods_3.jpg" alt="">
+			</div>
+		</div>
+		<!-- content end -->
+
+		<!-- footer -->
+		<div data-am-widget="navbar" class="am-navbar am-cf am-navbar-default index-footer-white" id="" style="height: 37px; background-color: #fff;">
+			<!-- 根据类型显示按钮状态 -->
+			<!-- 状态1 -->
+			<div class="appointment-1 button-wrap">
+				<button type="button" class="am-btn am-btn-primary am-btn-block gs-button" name="2">立即预约</button>
+				<!-- <button type="button" class="am-btn am-btn-default gs-button" name="1">单次预约</button> -->
+			    <!-- <button type="button" class="am-btn am-btn-primary gs-button" name="2">周期预约</button> -->
+			</div>
+			<div class="appointment-2">
+				<button type="button" class="am-btn am-btn-primary am-btn-block gs-button" name="1">立即预约</button>
+			</div>
+		</div>
+	<!-- footer end-->
+	</div>
+	<!-- 商品详情 end -->
+
+	<script src="../assets/js/jquery.js"></script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script src="../assets/js/popups.js"></script>
+	<script src="../assets/js/common.js"></script>
+	<script src="../assets/js/fastclick.js"></script>
+	<script src="../assets/js/app_path.js"></script>
+	<script>
+		$(function () {
+			FastClick.attach(document.body);
+    		var itemId = getUrlParam("id");
+			// 获取商品信息
+			function getGoodsList() {
+				
+				var url = "/service/findDetailByItemId?itemId="+itemId+"&"+Math.random();
+				var type = "GET";
+				var params = {};
+				jsAjax(type,url,"",goodsListCallBack,params,true);
+			}
+			
+			function goodsListCallBack(res) {
+				if(res.code == 200){
+					var gsList = '',
+					    lists = '',
+					    listContent = '';
+					gsList = res.obj;
+					$("#itemId").val(res.obj.itemId);
+					var prices = new Array();
+					$.each(gsList.details, function (index, item) {
+						if(index == 0){
+							listContent += '<dt><span>服务类别</span><span>服务价格</span><span style="' + (!item.remark ? 'display: none' : '') + '">' + (item.remark ? '备注' : '') + '</span></dt>';
+						}
+						listContent += '<dd><span>' + item.type + '</span><span>' + item.price + '元</span><span style="' + (!item.remark ? 'display: none' : '') + '">' + (item.remark ? item.remark : '') + '</span></dd>';
+						prices.push(item.price);
+					});
+					
+					$('#header').append('<a href="javascript:;" class="index-title-font">' + gsList.itemName + '</a>');
+					$('.gd-banner').append('<img src="' + gsList.pic + '" alt="">');
+					$('.gd-title').append('<h3>' + gsList.itemName + '</h3><span>' + gsList.shortIntro + '</span><span>&#165;' + findMin(prices) + '<i>起</i></span>');
+					var scope = gsList.scope.replace(/\\\"/g,'"');
+					$('.gd-des').append(scope);
+					//alert(scope);
+					//$('.gd-des').append('<img src="' + scope + '" alt="">');
+					$('.gd-price').append(listContent);
+	
+					// 显示按钮
+					// 日常保洁type=1，两个按钮， 
+					// 空调清洁type=0, 一个按钮
+					if (gsList.type == 1) {
+						$('.appointment-1').show();
+						$('.appointment-2').hide();
+					} else {
+						$('.appointment-1').hide();
+						$('.appointment-2').show();
+					}
+				} else {
+					console.log(res.msg);
+				}	
+			}
+
+			getGoodsList();
+
+			// 预约跳转
+			function apponmentClick() {
+				$('.gs-button').on('click', function () {
+					var name = $(this).attr('name');
+					window.location.href = 'order-submit.html?itemId=' + itemId;
+				});
+			}
+			apponmentClick();
+			
+			/*
+		     * 参数说明：
+		     * array:传入数组 ,例如：var arr = [5,7,66,78,99,103,126,203,1];
+		     */
+		    function findMin(array){
+		        var _min = array[0];    //假设最小的数就是    array[0]
+		        var _indexMin = 0;        //假设最小的数的下标就是0
+		        for(var i=0;i<array.length;i++){
+		            if(array[i] < _min){ //如果其他元素大于我们假设的值，证明我们假设的值不是最小的
+		                _min = array[i]; //重置_min的值
+		                _indexMin = i;    
+		            }            
+		        } 
+		        return _min;        
+		    };
+		});
+	</script>
+</body>
+</html>

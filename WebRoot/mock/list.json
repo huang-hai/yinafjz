@@ -1,0 +1,24 @@
+[
+	{	
+		"id": 0,
+		"image": "./assets/images/c_1.png",
+		"title": "卫生间深度清理套餐",
+		"descript": "无死角消毒，深度杀菌",
+		"price": "400",
+		"old_price": "480"
+	},{
+		"id": 1,
+		"image": "./assets/images/c_1.png",
+		"title": "卫生间深度清理套餐",
+		"descript": "无死角消毒，深度杀菌",
+		"price": "400",
+		"old_price": "480"
+	}, {
+		"id": 2,
+		"image": "./assets/images/c_1.png",
+		"title": "卫生间深度清理套餐",
+		"descript": "无死角消毒，深度杀菌",
+		"price": "400",
+		"old_price": "480"
+	}
+]

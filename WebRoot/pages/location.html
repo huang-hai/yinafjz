@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<title>服务地址</title>
+	<link rel="stylesheet" type="text/css" href="../assets/css/amazeui.min.css">
+	<link rel="stylesheet" type="text/css" href="../assets/css/app.css">
+</head>
+<body>
+	<!-- 定位 -->
+	<div class="add-address-wrap" id="location-wrap" style="display:block"> 
+		<div class="wrap">
+			<header data-am-widget="header" class="am-header am-header-default index-header-green">
+				<div class="am-header-left am-header-nav" onclick="history.go(-1)">
+					<a href="javascript:;" class=""><i class="am-header-icon am-icon-angle-left index-icon-left"></i></a>
+				</div>
+				<h1 class="am-header-title"><a href="#title-link" class="index-title-font">搜索地址</a></h1>
+				<div class="am-header-right am-header-nav"></div>
+			</header>
+			<div class="search-wrap">
+				<div class="search-btn" onclick="mapShow()">
+					<span><b class="city-name">福州市</b><i class="am-icon-angle-down" id="city_select"></i></span>
+					<ul class="search-list city-wrap">
+						<li>福州市</li>
+						<!-- <li>厦门市</li> -->
+					</ul>
+					<span>
+						<i class="am-icon-search"></i>
+						<form action="" onsubmit="return false">
+							<input type="search" name="" placeholder="搜索小区" id="map_result_input">
+						</form>
+						<i class="address-input-close">&#215;</i>
+					</span>
+					<ul class="search-list" id="map_search">
+						<!-- <li>福建省福州市仓山区</li> -->
+					</ul>
+				</div>
+			</div>
+			<div class="map-marker-wrap">
+				<p>当前定位</p>
+				<div>
+					<span><img src="../assets/images/location.png" alt="" width="15" height="auto"><i class="location-text">定位</i></span>
+					<span id="location_again">重新定位</span>
+				</div>
+			</div>
+			<div id="map" style="width:100%; height:100%; display: none;"></div>
+		</div>
+	</div>
+	<!-- 定位 end-->
+
+	<script src="../assets/js/jquery.js"></script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.7&key=3917b0c9b921b6c0d6dbd235298a0099"></script>
+	<script src="../assets/js/common.js"></script>
+	<script src="../assets/js/fastclick.js"></script>
+	<script src="../assets/js/jquery.cookie.js"></script>
+	<script>
+		function mapShow() {
+			$('#location-wrap').show()
+			$('#map_search').hide()
+		}
+		function mapHide() {
+			$('#location-wrap').hide()
+		}
+
+		// 定位
+		// currentLocation('.location-text')
+
+		//重新定位
+		$('#location_again').on('click', function () {
+			currentLocation('.location-text')
+		})
+
+		$( function () {
+			FastClick.attach(document.body);
+		// 获取地图
+
+
+		function getMap () {
+			var location = $('.city-name').html()
+		}
+
+		getMap()
+
+		// 地图
+		var map = new AMap.Map('map',{
+	        zoom: 10,
+	        // 根据位置
+	        // center: [119.355768,25.994567]
+	    });
+
+		AMap.plugin(['AMap.Autocomplete'], function(){
+			var autoOptions = {
+			//city 限定城市，默认全国
+			city: '福州'
+		}
+
+		 $('#map_result_input').on('input propertychange click', function () {
+		 	$('.address-input-close').addClass('active')
+
+		 	$('.am-icon-angle-down').removeClass('active');
+			$('.city-wrap').hide();
+		  	var autoComplete = new AMap.Autocomplete(autoOptions);
+		  	autoComplete.search($('#map_result_input').val(), function (status, result) {
+		  		var list = result.tips;
+		  		console.log(list);
+		  		var listStr = '';
+
+		  		if(!($('#map_result_input').val())) {
+			  		$('#map_search').hide();
+			  	} else {
+			  		$('#map_search').show();
+			  		$.each(list, function (index, item) {
+			  			$('#map_search').html('');
+			  			if(item.name) {
+			  				listStr += "<li district=\""+item.district+"\">"+item.name+"</li>";
+			  				$('#map_search').prepend(listStr);
+			  			}
+			  		})
+			  	}
+		  	})
+		  })
+		})
+
+		$('#map_result_input').blur(function(event) {
+			$('.address-input-close').removeClass('active')
+		});
+		$('#map_search').on('click', 'li', function () {
+			var html = $(this).text()
+			var district = $(this).attr("district");
+			console.log(district);
+			localStorage.setItem("region",district);
+			$('#map_maker').text(html)
+			$('#map_result_input').val(html)
+			$('.location-text').text(html)
+			// localStorage.setItem('address', html)
+			$('.address-input-close').removeClass('active')
+			history.go(-1)
+			
+		})
+
+		$('.address-input-close').on('click', function () {
+			$('#map_result_input').val('')
+		})
+
+		function citySelect () {
+			$('#city_select').on('click', function () {
+				$('#city_select').toggleClass('active');
+
+				if($('#city_select').hasClass('active')){
+					$('.city-wrap').show()
+				} else {
+					$('.city-wrap').hide()
+				}
+
+				$('.city-wrap').on('click', 'li', function () {
+					$('.city-name').text($(this).text())
+					$('#city_select').removeClass('active')
+					$('.city-wrap').hide()
+				})	 
+			})
+		}
+		citySelect()
+	})
+	</script>
+</body>
+</html>

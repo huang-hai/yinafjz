@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>订单</title>
+    <link rel="stylesheet" type="text/css" href="../assets/css/amazeui.min.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/app.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/order.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/message.css">
+</head>
+<body style="width: 100%; height: 100%; background-color: #f4f4f4;">
+    <header data-am-widget="header" class="am-header am-header-default index-header-green">
+      <div class="am-header-left am-header-nav" onclick="toUrl()">
+          <a href="javascript:;" class="">
+              <i class="am-header-icon am-icon-angle-left index-icon-left"></i>
+          </a>
+      </div>
+      <h1 class="am-header-title">
+            <a class="am-text-1">订单详情</a>
+      </h1>
+    </header>
+
+    <div class="am-text-center am-padding-xs am-header-mg-top am-bg-secondary" id="order_detail_top">
+        <span class="order-title-span"></span>
+        <!-- <ul class="order-status">
+            <li class="active">下单成功</li>
+            <li class="active">调度成功</li>
+            <li class="active">上门服务</li>
+            <li class="active">完成</li>
+        </ul> -->
+    </div>
+    
+    <section id="order_details_wrap">
+      <!-- <div class="am-margin-top-sm am-padding am-bg">
+        <div class="am-text-juxtaposition">
+            <div  class="am-text-juxtaposition-1">
+                <img src="../assets/images/c_1.png" width="100px" />
+            </div>
+            <div class="am-text-juxtaposition-2 am-vertical-top am-padding-left-sm">
+                <h3 class="am-margin-0">日常保洁</h3>
+                <span class="am-text-sm am-text-error">2小时</span>
+                <p class="am-margin-bottom-0 am-text-danger">￥400 <span class="am-fr">x1</span></p>
+            </div>
+        </div>
+      </div>
+      <div class="am-margin-top-sm am-padding am-bg">
+        <div class="am-text-juxtaposition">
+          <span class="am-text-juxtaposition-1">预约时间：</span>
+          <p class="am-text-juxtaposition-2">2018-11-22（周四）10:00-12:00</p>
+        </div>
+        <div class="am-text-juxtaposition">
+          <span class="am-text-juxtaposition-1">联系人：</span>
+          <p class="am-text-juxtaposition-2">罗伟</p>
+        </div>
+        <div class="am-text-juxtaposition">
+          <span class="am-text-juxtaposition-1">联系电话：</span>
+          <p class="am-text-juxtaposition-2">15689202870</p>
+        </div>
+        <div class="am-text-juxtaposition">
+          <span class="am-text-juxtaposition-1">服务地址：</span>
+          <p class="am-text-juxtaposition-2">海西百悦城二期1栋501</p>
+        </div>
+        <div class="am-text-juxtaposition">
+          <span class="am-text-juxtaposition-1">备注：</span>
+          <p class="am-text-juxtaposition-2">边角清洁干净</p>
+        </div>
+      </div>
+      
+      <div class="am-margin-top-sm am-padding am-bg tel-section">
+          <span>保洁员：刘芝兰</span>
+          <i class="am-icon-phone"></i>
+      </div>
+      
+      
+      <div class="am-margin-top-sm am-padding am-bg">
+          <div class="am-text-juxtaposition">
+            <span class="am-text-juxtaposition-1">订单编号：</span>
+            <p class="am-text-juxtaposition-2">152470083977561950</p>
+          </div>
+          <div class="am-text-juxtaposition">
+            <span class="am-text-juxtaposition-1">下单时间：</span>
+            <p class="am-text-juxtaposition-2">2018-11-20 16:20:18</p>
+          </div>
+      </div>
+      
+      <div class="am-margin-top-sm am-padding-horizontal am-bg">
+          <p class="am-margin-0 am-padding-top-sm">商品总额 <span class="am-fr">￥400</span></p>
+          <p class="am-margin-0">商品优惠 <span class="am-fr">￥0</span></p>
+          <div class="am-text-right am-margin-vertical-sm am-padding-vertical-sm am-border-top">
+              <span>实付款</span>
+              <span class="am-text-danger">￥400</span>
+          </div>
+      </div> -->
+    </section>
+    
+
+    <div class="am-padding am-text-right" id="footer-btn">
+        <button type="button" class="am-btn am-text-color-ash" onclick="order_cancel()">取消订单</button>
+        <button type="button" class="am-btn am-btn-high-risk" onclick="order_payment()">去支付</button>
+        <button type="button" class="am-btn am-btn-green" onclick="order_evaluate()">去评价</button>
+    </div>
+<script src="../assets/js/jquery.js"></script>
+<script src="../assets/js/amazeui.min.js"></script>
+<script src="../assets/js/popups.js"></script>
+<script src="../assets/js/app_path.js"></script>
+<script src="../assets/js/livetime.js"></script>
+<script src="../assets/js/fastclick.js"></script>
+<script src="../assets/js/common.js"></script>
+<script type="text/javascript">
+    function order_cancel() {
+        // body...
+      window.location.href = "./order-cancel.html?orderid="+getUrlParam("orderId");
+    }
+    function order_payment () {
+      window.location.href = "./order-payment.html?orderId="+getUrlParam("orderId");
+    }
+    function order_evaluate () {
+      window.location.href = "./evaluate.html?orderId="+orderId+"&auntId="+auntId;
+    } 
+    
+    function toUrl(){
+    	//来源标识 1：app链接过来   其他：正常来源
+    	var flag = getUrlParam("flag");
+    	if(flag == 1){
+    		window.location.href = "../index.html";
+    	} else {
+	    	window.location.href = "../order.html";
+    	}
+    }
+
+    // 截取url
+    function urlSearch() {
+      var name, value
+      var str = location.href
+      var num = str.indexOf('?')
+      str = str.substr(num + 1)
+
+      var arr = str.split("&"); 
+        for (var i = 0; i < arr.length; i++) {
+            num = arr[i].indexOf("=");
+            if (num > 0) {
+                name = arr[i].substring(0, num);
+                value = arr[i].substr(num + 1);
+                this[name] = value;
+            }
+        }
+    }
+
+    $(function () {
+    	FastClick.attach(document.body);
+    	orderId = getUrlParam("orderId");
+    	auntId = 0;
+    	//订单状态
+    	var state = 0; 
+    	//评价状态 默认未评价
+    	var eval_state = false;
+    	
+    	var createTime = "";
+        //var currentUrl = new urlSearch();
+        //var id = currentUrl.orderid;
+        //var type = currentUrl.ordertype;
+        var statusList = ['下单成功，等待调度人员', '调度成功，等待服务人员上门', '服务人员已出发,请保持电话畅通', '服务完成'] ;
+        
+
+        function getList () {
+        	var url = "/order/findOrderById?orderId="+orderId+"&"+Math.random();
+			var type = "GET";
+			var params = {};
+			jsAjax(type,url,"",listCallBack,params,false);
+			
+        }
+        
+        function listCallBack(res) {
+        	if(res.code == 200){
+	           var list = res.obj;
+	           state = list.state;
+	           createTime = list.createTime;
+	           if(list.evaluateTime){
+	            eval_state = true;
+	           } else {
+	            auntId = list.auntId;
+	           }
+	           var str = "";
+	           console.log(list)
+		
+	           // 待服务状态
+	           if(state == 2) {
+	             var titleStr = "";
+	             // ES6 转 ES5
+	             titleStr += "<span> "+statusList[list.attemperStatus]+" </span>";
+	             titleStr += "  <ul class=\"order-status\">                                             ";
+	             if(list.attemperStatus == 0){
+	              titleStr += "      <li class=\"active\">下单成功</li>   ";
+	             } else {
+	              titleStr += "      <li>下单成功</li>   ";
+	             }
+	             if(list.attemperStatus == 1){
+	              titleStr += "      <li class=\"active\">调度成功</li>   ";
+	             } else {
+	              titleStr += "      <li>调度成功</li>   ";
+	             }
+	             if(list.attemperStatus == 2){
+	              titleStr += "      <li class=\"active\">上门服务</li>   ";
+	             } else {
+	              titleStr += "      <li>上门服务</li>   ";
+	             }
+	             if(list.attemperStatus == 3){
+	              titleStr += "      <li class=\"active\">完成</li>   ";
+	             } else {
+	              titleStr += "      <li>完成</li>   ";
+	             }
+	             titleStr += "  </ul>                                                               ";
+	
+	               $('#order_detail_top').prepend(titleStr);
+	           }
+	
+	           str += "<div class=\"am-margin-top-sm am-padding am-bg\">";
+	           $.each(list.orderServices,function(index,obj){
+		            str += "          <div class=\"am-text-juxtaposition\">                                                                                        ";
+		            str += "              <div  class=\"am-text-juxtaposition-1\">                                                                                 ";
+		            str += "                  <img src=\""+obj.pic+"\" width=\"100px\" />                                                               ";
+		            str += "              </div>                                                                                                                 ";
+		            str += "              <div class=\"am-text-juxtaposition-2 am-vertical-top am-padding-left-sm\">                                               ";
+		            str += "                  <h3 class=\"am-margin-0\">"+list.itemName+"</h3>                                                                         ";
+		            str += "                  <span class=\"am-text-sm am-text-error\">"+obj.name+"</span>                                                         ";
+		            str += "                  <p class=\"am-margin-bottom-0 am-text-danger\">&#165;"+obj.price+" <span class=\"am-fr\">&#215;"+obj.num+"</span></p>";
+		            str += "              </div>                                                                                                                 ";
+		            str +=	 "          </div>                                                                                                                     ";
+	           });
+	           str += "                                                                                                                                     ";
+	           str += "        </div>                                                                                                                       ";
+	           str += "        <div class=\"am-margin-top-sm am-padding am-bg\">                                                                              ";
+	           str += "          <div class=\"am-text-juxtaposition\">                                                                                        ";
+	           str += "            <span class=\"am-text-juxtaposition-1\">预约时间：</span>                                                                  ";
+	           str += "            <p class=\"am-text-juxtaposition-2\">"+list.serviceTime+"</p>                                                                      ";
+	           str += "          </div>                                                                                                                     ";
+	           str += "          <div class=\"am-text-juxtaposition\">                                                                                        ";
+	           str += "            <span class=\"am-text-juxtaposition-1\">联系人：</span>                                                                    ";
+	           str += "            <p class=\"am-text-juxtaposition-2\">"+list.customer+"</p>                                                                   ";
+	           str += "          </div>                                                                                                                     ";
+	           str += "          <div class=\"am-text-juxtaposition\">                                                                                        ";
+	           str += "            <span class=\"am-text-juxtaposition-1\">联系电话：</span>                                                                  ";
+	           str += "            <p class=\"am-text-juxtaposition-2\">"+list.phone+"</p>                                                                     ";
+	           str += "          </div>                                                                                                                     ";
+	           str += "          <div class=\"am-text-juxtaposition\">                                                                                        ";
+	           str += "            <span class=\"am-text-juxtaposition-1\">服务地址：</span>                                                                  ";
+	           str += "            <p class=\"am-text-juxtaposition-2\">"+list.address+"</p>                                                                   ";
+	           str += "          </div>                                                                                                                     ";
+	           str += "          <div class=\"am-text-juxtaposition\">                                                                                        ";
+	           str += "            <span class=\"am-text-juxtaposition-1\">备注：</span>                                                                      ";
+	           str += "            <p class=\"am-text-juxtaposition-2\">"+list.remark+"</p>                                                                    ";
+	           str += "          </div>                                                                                                                     ";
+	           str += "        </div>      ";
+	           //是否已被接单                                                                                              
+	           if(list.attemperStatus != 0 && list.attemperStatus != 4){
+		           	//已接单
+		            str += "        <div class=\"am-margin-top-sm am-padding am-bg tel-section\">                                     ";
+		            str += "            <span>保洁员："+list.auntModel.trueName+"</span>                                                                                 ";
+		            str += "            <i class=\"am-icon-phone\"><a href=\"tel://"+list.auntModel.userName+"\">"+list.auntModel.userName+"</a></i>                                                                        ";
+		            str += "        </div>                                                                                                                       ";
+	           }
+	           str += "                                                                                                                                     ";
+	           str += "        <div class=\"am-margin-top-sm am-padding am-bg\">                                                                              ";
+	           str += "            <div class=\"am-text-juxtaposition\">                                                                                      ";
+	           str += "              <span class=\"am-text-juxtaposition-1\">订单编号：</span>                                                                ";
+	           str += "              <p class=\"am-text-juxtaposition-2\">"+list.orderNumber+"</p>                                                               ";
+	           str += "            </div>                                                                                                                   ";
+	           str += "            <div class=\"am-text-juxtaposition\">                                                                                      ";
+	           str += "              <span class=\"am-text-juxtaposition-1\">下单时间：</span>                                                                ";
+	           str += "              <p class=\"am-text-juxtaposition-2\">"+list.createTime+"</p>                                                              ";
+	           str += "            </div>                                                                                                                   ";
+	           str += "        </div>                                                                                                                       ";
+	           str += "                                                                                                                                     ";
+	           str += "        <div class=\"am-margin-top-sm am-padding-horizontal am-bg\">                                                                   ";
+	           str += "            <p class=\"am-margin-0 am-padding-top-sm\">商品总额 <span class=\"am-fr\">&#165;"+list.totalMoney+"</span></p>               ";
+	           str += "            <p class=\"am-margin-0\">商品优惠 <span class=\"am-fr\">&#165;"+list.discounts+"</span></p>                                    ";
+	           str += "            <div class=\"am-text-right am-margin-vertical-sm am-padding-vertical-sm am-border-top\">                                   ";
+	           str += "                <span>实付款</span>                                                                                                  ";
+	           str += "                <span class=\"am-text-danger\">&#165;"+list.actualPayment+"</span>                                                          ";
+	           str += "            </div>                                                                                                                   ";
+	           str += "        </div>                                                                                                                       ";
+	           $('#order_details_wrap').append(str)     ; 
+	             
+	           showType();
+        	} else {
+        		jqtoast(res.msg);
+        	}
+        }
+        getList()
+
+		function showType(){
+	        // 根据订单类型
+	        if( state == 1) {
+	            // 待支付
+	            $('#order_detail_top').html('剩余支付时间 <span id="needTime"></span> ');
+	            // 隐藏评价按钮
+	            $('.am-btn-green').hide()
+	            liveTime.initData(orderId);
+	            var showTimeInterval = setInterval(function(){
+	            	var time = liveTime.calculateTime(createTime);
+	            	if("00:00" != time){
+		            	$("#needTime").html(time);
+	            	} else {
+	            		clearInterval(showTimeInterval);
+	            		$('#order_detail_top').html('交易关闭<span id="needTime"></span> ');
+	            		liveTime.updateOrderInfo(app_path);
+	            		window.location.reload();
+	            	}
+	            },1000);
+	        } else if(state == 2){
+	            //订单进行中
+	            $('.order-title-span').hide()
+	            $('.am-btn-green').hide()
+	            //隐藏支付按钮
+	            $('.am-btn-high-risk').hide()
+	        } else if(state == 3 && !eval_state) {
+	        	//已完成  未评价
+	            $('#order_detail_top').html('已完成');
+	            //隐藏支付按钮
+	            $('.am-btn-high-risk').hide()
+	            $('.am-text-color-ash').hide()
+	        } else if (state == 4) {     
+	            $('#order_detail_top').addClass('order-cancel').html('已取消');
+	            $('#footer-btn').hide()
+	        } else if (state == 3 && eval_state){ //暂时用5代替
+	            // 已评价页面，不显示去评价按钮  (已完成 已评价)
+	            $('#order_detail_top').html('已完成');
+	            $('#footer-btn').hide()
+	        } else if(state == 0){
+	        	// 已关闭
+	        	$('#order_detail_top').removeClass('am-bg-secondary');
+	        	$('#order_detail_top').addClass('active');
+	        	$('#order_detail_top').html('已关闭');
+	            $('.am-btn-high-risk').hide();
+	            $('.am-text-color-ash').hide();
+	            $('.am-btn-green').hide();
+	        }
+		}
+    })
+
+</script>
+</body>
+</html>

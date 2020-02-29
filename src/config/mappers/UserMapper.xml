@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yinafjz.cleaning.user.dao.UserDao" >
+
+	<resultMap id="UserMap" type="com.yinafjz.cleaning.user.model.UserModel">
+	    <id column="user_id" jdbcType="INTEGER" property="userId" />
+	    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+	    <result column="pass_word" jdbcType="VARCHAR" property="passWord" />
+	    <result column="image" jdbcType="VARCHAR" property="image" />
+	    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+	    <result column="phone" jdbcType="VARCHAR" property="phone" />
+	    <result column="mail" jdbcType="VARCHAR" property="mail" />
+	    <result column="sex" jdbcType="TINYINT" property="sex" />
+	    <result column="birthday" jdbcType="VARCHAR" property="birthday" />
+	    <result column="blood" jdbcType="VARCHAR" property="blood" />
+	    <result column="occupation" jdbcType="VARCHAR" property="occupation" />
+	    <result column="household_register" jdbcType="VARCHAR" property="householdRegister" />
+	    <result column="domicile" jdbcType="VARCHAR" property="domicile" />
+	    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+	    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+	    <result column="user_type" jdbcType="TINYINT" property="userType" />
+	    <result column="user_state" jdbcType="TINYINT" property="userState" />
+	    <result column="data_flag" jdbcType="TINYINT" property="dataFlag" />
+  	</resultMap>
+  	
+	<resultMap id="couponMap" type="com.yinafjz.cleaning.user.model.CouponModel" autoMapping="true">
+	</resultMap>
+
+	<!-- APP免登陆查询用户信息 -->
+  	<select id="getUserByLogin" resultMap="UserMap">
+  		select u.user_id,u.user_name,u.real_name,u.sex,
+  		u.user_type,u.user_state from ynf_pension.ynf_user u 
+  		where u.data_flag = 1 and u.user_id = #{userId} limit 1
+  	</select>
+
+	<sql id="coupon_list">
+		coupon_id,coupon_name,goods_id,user_id,money,pull,state,
+		date_format(begin_time,'%Y-%m-%d %H:%i:%s') begin_time,
+		date_format(end_time,'%Y-%m-%d %H:%i:%s') end_time,
+		date_format(create_time,'%Y-%m-%d %H:%i:%s') create_time
+	</sql>
+
+	<!-- 根据用户或者商品查询 -->
+	<select id="findByCondition" resultMap="couponMap">
+		select <include refid="coupon_list" /> from ynf_service_coupon
+		where state = 1
+		<if test="userId != null and userId != 0">
+			and user_id = #{userId}
+		</if>
+		<if test="goodsId != null and goodsId != 0">
+			and goods_id = #{goodsId}
+		</if>
+	</select>
+
+	<!-- 根据ID查询 -->
+	<select id="findCouponById" resultMap="couponMap">
+		select <include refid="coupon_list"/>
+		from ynf_service_coupon
+		where coupon_id = #{id}
+	</select>
+</mapper>

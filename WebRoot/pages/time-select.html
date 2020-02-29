@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<title>商品详情</title>
+	<link rel="stylesheet" type="text/css" href="../assets/css/amazeui.min.css">
+	<link rel="stylesheet" type="text/css" href="../assets/css/app.css">
+	<link rel="stylesheet" type="text/css" href="../assets/css/message.css">
+</head>
+<body style="width: 100%; height: 100%; background-color: #f4f4f4;">
+	<!-- 预约服务 -->
+	<div class="appointment-wrap">
+		<!-- header -->
+		<header data-am-widget="header" class="am-header am-header-default index-header-green">
+			<div class="am-header-left am-header-nav" id="nav_back" onclick="history.back(-1)">
+				<a href="javascript:;" class=""><i class="am-header-icon am-icon-angle-left index-icon-left"></i></a>
+			</div>
+			<h1 class="am-header-title"><a href="pages/address.html" class="index-title-font">选择服务时间</a></h1>
+			<div class="am-header-right am-header-nav"></div>
+		</header>
+	  	<!-- header end -->
+	  	<!-- content -->
+		<div class="appointment-content">
+			<ul class="date-wrap">
+				<!-- <li class="active">
+					<span>今天</span>
+					<span>11月27日</span>
+				</li>
+				<li>
+					<span>今天</span>
+					<span>11月27日</span>
+				</li>
+				<li>
+					<span>今天</span>
+					<span>11月27日</span>
+				</li>
+				<li>
+					<span>今天</span>
+					<span>11月27日</span>
+				</li>
+				<li>
+					<span>今天</span>
+					<span>11月27日</span>
+				</li>
+				<li>
+					<span>今天</span>
+					<span>11月27日</span>
+				</li>	
+				<li>
+					<span>今天</span>
+					<span>11月27日</span>
+				</li> -->
+			</ul>
+		</div>
+		<ul class="time-wrap">
+			<!-- 满员 time-full-->
+			<!-- 选中 active-->
+			<!-- <li class="time-full">10:00</li>
+			<li>11:00</li>
+			<li>13:00</li>
+			<li>14:00</li>
+			<li>15:00</li>
+			<li>16:00</li>
+			<li></li>
+			<li></li>
+			<li>10:00-12:00</li> -->
+		</ul>
+		  <!-- content end -->
+		<!-- 预约按钮 -->
+		<!-- 注意事项 -->
+		<div class="attention-wrap">
+			<span>注意事项</span>
+			<span>如需变更预约服务时间，请您至少提前1天与客服沟通，以免造成违约损失</span>
+		</div>
+		<button type="button" class="am-btn am-btn-primary am-btn-block sure-btn">确定预约</button>
+	</div>
+	<!-- 预约服务 end -->
+
+	<script src="../assets/js/jquery.js"></script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script src="../assets/js/popups.js"></script>
+	<script>
+
+		// 截取url
+	    function urlSearch() {
+	      var name, value
+	      var str = location.href
+	      var num = str.indexOf('?')
+	      str = str.substr(num + 1)
+
+	      var arr = str.split("&"); 
+	        for (var i = 0; i < arr.length; i++) {
+	            num = arr[i].indexOf("=");
+	            if (num > 0) {
+	                name = arr[i].substring(0, num);
+	                value = arr[i].substr(num + 1);
+	                this[name] = value;
+	            }
+	        }
+	    }
+
+	    var timeList_1 = ["10:00", "11:00", "13:00", "14:00", "15:00", "16:00"]
+
+		$(function () {
+
+			localStorage.setItem('serverTime', '')
+
+			var timeSelectUrl = new urlSearch()
+			// 1 空调类型， 2 日常清洁类型
+			var timeType = timeSelectUrl.type
+
+			var dateZh = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+
+			// 获取当前日期
+			function getCurrentDate() {
+
+				function setDate(num) {
+					var date = new Date();
+					var date2 = new Date(date);
+					date2.setDate(date.getDate() + num);
+					return date2;
+				}
+
+				var dateList = '';
+				for (var i = 0; i < 7; i++) {
+					var m = setDate(i).getMonth() + 1;
+					var d = setDate(i).getDate();
+					var w = setDate(i).getDay();
+					// 如果当天约满 添加样式full-active
+					dateList += `<li class="${i==0? 'active full-active': ''}"><span>${i==0?'今天':(i==1?'明天':dateZh[w])}</span><span>${m}月${d}日</span></li>`
+				}
+				$('.date-wrap').append(dateList);
+			}
+
+			getCurrentDate();
+
+			// 日期选择
+			function dateSelect(name) {
+				$('.date-wrap').on('click', 'li', function () {
+					$(this).addClass('active').siblings().removeClass('active');
+					// 点击获取当前对应时间信息
+					var selDate = $(this).text()
+					getTimeList(timeType);
+				});
+			}
+
+			dateSelect(timeType);
+
+			// 获取服务时间信息
+			function getTimeList(name, date) {
+				var timeList = '';
+				$.ajax({
+					type: 'GET',
+					url: '../mock/appointment_' + name + '.json',
+					dataType: 'json',
+					success: function success(res) {
+						var list = res;
+						$.each(list, function (index, item) {
+								// 整点预约  根据商品类型显示 (空调类型)
+							if (name == 1) {
+								$('.time-wrap').html('');
+								timeList += '<li class="' + (item.state == 1 ? 'time-full' : '') + '" type="' + item.state + '">' + item.time + '</li>';
+
+								// 如果的当天所有时间都约满 给li添加full-all-active
+								// timeList += `<li class="${item.state == 1?'time-full':'full-all-active'}">${item.time}</li>`
+							} else if (name == 2) {
+								// 按时间范围预约(日常清洁类型)
+								$('.time-wrap').html('');
+								timeList += '<li class="' + (item.state == 1 ? 'time-full period' : 'period lh-40') + '" type="' + item.state + '"><span>' + timeList_1[index] + '</span></li>';
+							}
+						});
+
+						setTimeout(function () {
+							$('.time-wrap').append(timeList);
+						}, 100);
+					},
+					err: function err(_err) {
+						console.log(_err);
+					}
+				});
+			}
+			getTimeList(timeType)
+
+			// 时间选择
+			function timeSelect() {
+				$('.time-wrap').on('click', 'li', function () {
+					// 未约满状态可以选择
+					var time = $(this).html()
+					if ($(this).attr('type') == 0) {
+						$(this).addClass('active').siblings().removeClass('active');
+					}
+				});
+			}
+			timeSelect();
+			
+			// 确定选择
+			function sureBtn () {
+				$('.sure-btn').on('click', function (event) {
+					var finallyDateList = $('.date-wrap li') 
+					var finallyTimeList = $('.time-wrap li')
+
+					let currentDate = $('.date-wrap li.active').text()
+					let currentTime = $('.time-wrap li.active').text()
+
+					if( !currentTime ) {
+						jqtoast('请选择服务时间')
+					} else {
+						localStorage.setItem('serverDate', currentDate)
+						localStorage.setItem('serverTime', currentTime)
+						window.location.href = 'order-submit.html?type='+ timeType
+					}
+				})
+			}
+
+			sureBtn()
+
+		});
+	</script>
+</body>
+</html>

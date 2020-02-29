@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yinafjz.cleaning.user.dao.AddressDao" >
+
+  <resultMap id="addressMap" type="com.yinafjz.cleaning.user.model.AddressModel">
+  	<id column="au_id" property="auId" />
+  	<result column="user_id" property="userId"/>
+  	<result column="community_id" property="communityId"/>
+  	<result column="receiver" property="receiver"/>
+  	<result column="phone" property="phone"/>
+  	<result column="region" property="region"/>
+  	<result column="address" property="address"/>
+  	<result column="zipcode" property="zipcode"/>
+  	<result column="defcode" property="defcode"/>
+  	<result column="community_name" property="communityName"/>
+  	<result column="create_time" property="createTime"/>
+  	<result column="update_time" property="updateTime"/>
+  </resultMap>
+	
+  <sql id="column_list" >
+    au_id, user_id,community_id, receiver, phone, region, address, zipcode, defcode,
+    date_format(create_time,'%Y-%m-%d %H:%i:%s') as create_time, 
+    date_format(update_time,'%Y-%m-%d %H:%i:%s') as update_time
+  </sql>
+
+  <insert id="addAddress" parameterType="com.yinafjz.cleaning.user.model.AddressModel">
+  	<selectKey keyProperty="addrId" order="AFTER" resultType="java.lang.Integer">
+        select LAST_INSERT_ID()
+    </selectKey>
+	insert into ynf_pension.ynf_user_address(user_id,community_id,receiver,phone,region,address,zipcode,defcode,create_time) 
+	values(#{userId},#{communityId},#{receiver},#{phone},#{region},#{address},#{zipcode},#{defcode},now())
+  </insert>
+  
+  <update id="editAddress" parameterType="com.yinafjz.cleaning.user.model.AddressModel">
+  	update ynf_pension.ynf_user_address
+  	<set>
+  		<if test="receiver != null and receiver != ''">
+  			receiver = #{receiver},
+  		</if>
+  		<if test="communityId != null">
+  			community_id = #{communityId},
+  		</if>
+  		<if test="phone != null and phone != ''">
+  			phone = #{phone},
+  		</if>
+  		<if test="region != null and region != ''">
+  			region = #{region},
+  		</if>
+  		<if test="address != null and address != ''">
+  			address = #{address},
+  		</if>
+  		<if test="zipcode != null and zipcode != ''">
+  			zipcode = #{zipcode},
+  		</if>
+  	</set>
+  	where au_id = #{auId}
+  </update>
+  
+  <update id="editDefaultAddr">
+  	update ynf_pension.ynf_user_address
+  	set defcode = 1
+  	where au_id = #{id}
+  </update>
+  
+  <update id="editNotDefaultAddr">
+  	update ynf_pension.ynf_user_address
+  	set defcode = 0
+  	where user_id = #{id}
+  </update>
+  
+  <update id="delAddress">
+  	update ynf_pension.ynf_user_address
+  	set data_flag = 0
+  	where au_id = #{id}
+  </update>
+  
+  <select id="findAddresssByUserId" resultMap="addressMap">
+  	select au_id, user_id,yc.community_id, receiver, phone, region, address, zipcode, defcode,
+    date_format(yua.create_time,'%Y-%m-%d %H:%i:%s') as create_time, 
+    date_format(yua.update_time,'%Y-%m-%d %H:%i:%s') as update_time,
+    yc.community_name 
+  	from ynf_pension.ynf_user_address yua
+  	inner join ynf_homemaking.ynf_community yc
+  	on yua.community_id = yc.community_id
+  	where user_id = #{userId} 
+  	and yua.data_flag = 1
+  	and yc.data_flag = 1 
+  </select>
+  
+  <select id="findDefultAddrByUserId" resultMap="addressMap">
+  	select au_id, user_id,yc.community_id, receiver, phone, region, address, zipcode, defcode,
+    date_format(yua.create_time,'%Y-%m-%d %H:%i:%s') as create_time, 
+    date_format(yua.update_time,'%Y-%m-%d %H:%i:%s') as update_time,
+    yc.community_name 
+  	from ynf_pension.ynf_user_address yua
+  	inner join ynf_homemaking.ynf_community yc
+  	on yua.community_id = yc.community_id
+  	where yua.data_flag = 1
+  	and yc.data_flag = 1
+  	and defcode = 1 
+  	and user_id = #{userId}
+  </select>
+  
+  <select id="findCommunitys" resultType="java.util.Map">
+  	select community_id id,community_name name 
+  	from ynf_homemaking.ynf_community
+  	where data_flag = 1
+  </select>
+  
+  <select id="findAddressById" resultMap="addressMap">
+  	select au_id, user_id,yc.community_id, receiver, phone, region, address, zipcode, defcode,
+    date_format(yua.create_time,'%Y-%m-%d %H:%i:%s') as create_time, 
+    date_format(yua.update_time,'%Y-%m-%d %H:%i:%s') as update_time,
+    yc.community_name 
+  	from ynf_pension.ynf_user_address yua
+  	inner join ynf_homemaking.ynf_community yc
+  	on yua.community_id = yc.community_id
+  	where au_id = #{id}
+  	and yua.data_flag = 1
+  	and yc.data_flag = 1
+  </select>
+</mapper>

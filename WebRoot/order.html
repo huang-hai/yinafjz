@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>订单</title>
+    <link rel="stylesheet" type="text/css" href="./assets/css/amazeui.min.css">
+    <link rel="stylesheet" type="text/css" href="./assets/css/app.css">
+    <link rel="stylesheet" type="text/css" href="./assets/css/order.css">
+    <link rel="stylesheet" type="text/css" href="./assets/css/dropload.css">
+    <link rel="stylesheet" type="text/css" href="./assets/css/message.css">
+</head>
+<body style="width: 100%; height: 100%; background-color: #f4f4f4;">
+    <header data-am-widget="header" class="am-header am-header-default index-header-green">
+      <div class="am-header-left am-header-nav" onclick="toUrl()">
+          <a href="#">
+              <i class="am-header-icon am-icon-angle-left index-icon-left"></i>
+          </a>
+      </div>
+      <h1 class="am-header-title">
+            <a class="am-text-1">我的订单</a>
+      </h1>
+    </header>
+
+    <ul class="am-breadcrumb" style="margin-top: 49px;" id="order_list">
+        <li class="am-active" state="1"><a href="">待支付 <span class="title-len"></span></a></li>
+        <li state="2"><a href="javascript:;">进行中 <span></span></a></li>
+        <li state="3"><a href="javascript:;">已完成 <span></span></a></li>
+        <li state="-1"><a href="javascript:;">全部 <span></span></a></li>
+    </ul>
+
+    <div id="order-list">
+        <!-- <div class="am-bg am-order am-margin-top-sm">
+            <div class="am-order-title">2018-11-20 16:20:18 <span class="am-fr am-text-danger">待付款</span></div>
+            <div class="am-padding am-padding-top-xs am-padding-bottom-xs" onclick="order_details()">
+                <h3 class="am-margin-0">日常保洁</h3>
+                <div class="am-text-juxtaposition">
+                  <span class="am-text-juxtaposition-1">预约时间：</span>
+                  <p class="am-text-juxtaposition-2">2018-11-22（周四）10:00-12:00</p>
+                </div>
+                <div class="am-text-juxtaposition">
+                  <span class="am-text-juxtaposition-1">服务地址：</span>
+                  <p class="am-text-juxtaposition-2 am-monospace">海西百悦城二期1栋501</p>
+                </div>
+            </div>
+            <div class="am-cf am-padding am-order-footer">
+                <button type="button" class="am-fr am-btn am-btn-green am-radiu-4 am-padding-horizontal">去支付</button>
+            </div>
+        </div> -->
+        <div class="empty-show">
+            <img src="./assets/images/none.png" alt="" width="120" />
+            <span>还没有相关订单信息，快去下单体验吧~</span>
+        </div>
+    </div>
+
+
+    <div data-am-widget="navbar" class="am-navbar am-cf am-navbar-default index-footer-white" id="">
+        <ul class="am-navbar-nav am-cf am-avg-sm-4">
+            <li>
+                <a href="index.html" >
+                    <span><img src="assets/images/home.png" alt=""></span>
+                    <span class="am-navbar-label">首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="classify.html">
+                    <span><img src="assets/images/classify.png" alt=""></span>
+                    <span class="am-navbar-label">分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="order.html">
+                    <span><img src="assets/images/order_active.png" alt=""></span>
+                    <span class="am-navbar-label active-green">订单</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+	<script src="./assets/js/jquery.js"></script>
+    <script src="./assets/js/amazeui.min.js"></script>
+    <script src="./assets/js/dropload.min.js"></script>
+    <script src="./assets/js/popups.js"></script>
+    <script src="./assets/js/app_path.js"></script>
+    <script src="./assets/js/common.js"></script>
+    <script src="./assets/js/fastclick.js"></script>
+    <script src="./assets/js/jquery.cookie.js"></script>
+<script>
+   	//回退到客户端
+	/* function goBack(e){
+		//e.preventDefault();
+		window.location.href = "goback://";
+	} */
+	
+	function toUrl(){
+		window.location.href = "./index.html";
+	}
+	
+    $(function () {
+    	FastClick.attach(document.body);
+    	window.localStorage.removeItem("orderId");
+        // 最后这个已完成是已评价的样式
+        var typeList = ['已关闭', '待付款', '待服务', '已完成', '已取消']
+        var btnList = ['','去支付', '取消订单', '待评价','']
+		var userId = getUser();
+		if(userId == 0){
+			jqtoast("您还未登录，请登录");
+			return;
+		}
+		
+		$('#order-list').dropload({
+            scrollArea: window,
+            domDown:{
+                domClass:'dropload-down',
+                domRefresh:'<div class="dropload-refresh">上拉加载更多</div>',
+                domLoad:'<div class="dropload-load">正在加载中...</div>',
+                domNoData:'<div class="dropload-noData">-已经到底了-</div>'
+            },
+            loadDownFn: function (me) {
+             //   page++
+             // getList(me)
+            }
+        })
+		
+		
+		//获取订单列表
+        function getList(state, me) {
+        
+        	var url = "/order/findOrderByState?userId="+userId+"&state="+state+"&"+Math.random();
+			var type = "GET";
+			var params = {};
+			params["state"] = state;
+			params["me"] = me;
+			jsAjax(type,url,"",listCallBack,params,true);
+        }
+        
+        function listCallBack(res,params) {
+        	var type = params["state"];
+        	var me = params["me"];
+            if(res.code == 200){
+             var list = "";
+             var len = res.obj.length;
+             // 待支付条数显示
+            if(type == 1) {
+                 if (len == 0){
+                     $('.dropload-down').html('');
+                     //$('.dropload-down').hide();
+                     $('.title-len').text('')
+                     $('.empty-show').show()
+                 } else {
+                     $('.title-len').text('('+len+')')
+                     $('.empty-show').hide()
+                 }
+             } else {
+             	if(len == 0){
+             		$('.dropload-down').html('');
+             		$('.empty-show').show();
+             	} else {
+             		$('.empty-show').hide();
+             	}
+             }
+             
+             res.obj.forEach(function (item) {                       //在117行中间空的地方插入    ordertype=item.state
+             	var btnStyle = ""; 
+             	var showType = typeList[item.state];
+                 if(btnList[item.state]){
+                 	if(btnList[item.state] == "取消订单"){
+                 		if(item.attemperStatus > 1){
+                 			btnStyle = "display:none";
+                 			showType = "服务中";
+                 		} else {
+                 			btnStyle = "display:block";
+                 		}
+                 	} else {
+                 		btnStyle = "display:block";
+                 	}
+                 } else {
+                 	btnStyle= "display:none";
+                 }
+                 list += "<div class=\"am-bg am-order am-margin-top-sm\"><div class=\"am-order-title\">";
+                 list += item.createTime + " <span class=\"am-fr am-text-danger\">";
+                 list += showType + "</span></div><div class=\"am-padding am-padding-top-xs am-padding-bottom-xs order-detail-jump\""; 
+                 list += "orderId=\"" + item.orderId + "\"                                          ><h3 class=\"am-margin-0\">";
+                 list += item.itemName + "</h3><div class=\"am-text-juxtaposition\"><span class=\"am-text-juxtaposition-1\">\u9884\u7EA6\u65F6\u95F4\uFF1A</span>";
+                 list += "<p class=\"am-text-juxtaposition-2\">" + item.serviceTime + "</p></div><div class=\"am-text-juxtaposition\"><span class=\"am-text-juxtaposition-1\">";
+                 list += "\u670D\u52A1\u5730\u5740\uFF1A</span><p class=\"am-text-juxtaposition-2 am-monospace\">" + item.region + item.address + "</p></div></div>";
+                 list += "<div class=\"am-cf am-padding am-order-footer\" style=\"";
+                 list += btnStyle + "\">";
+                 //未评价
+                 if(!item.evaluateTime){
+	                 list += "<button type=\"button\" class=\"am-fr am-btn am-btn-green am-radiu-4 am-padding-horizontal order-btn\" orderId=\"" + item.orderId + "\" marker=\"" + item.state + "\" auntId=\""+item.auntId+"\">";
+	                 list += btnList[item.state] + "</button>";
+                 } 
+                  list += "</div></div>";
+             });
+             setTimeout(function () {
+                 $('#order-list').children().filter('.am-order').remove();
+                 $('#order-list').prepend(list);
+                 if (len >= 1) {
+                     // 根据 page做判断
+                     $(".dropload-load").html('-已经到底了-');
+                 }
+             }, 200);
+
+             if (me) {
+                 me.resetload();
+             }
+            } else {
+            	$('.title-len').text('');
+            	$('.empty-show').show();
+            	$('.dropload-down').html('');
+            }
+        }
+
+        // 页面初始化获取待付款列表 
+        getList(1);
+
+
+        // 订单选项卡
+        function orderClick () {
+            $('#order_list').on('click', 'li', function (e) {
+                e.preventDefault()
+                var state = $(this).attr("state");
+                // 0:待支付 1:进行中 2:已完成 3:全部
+                $(this).addClass('am-active').siblings().removeClass('am-active')
+                getList(state)
+            })
+        }
+
+        orderClick()
+
+        $('#order-list').on('click','.order-btn', function () {
+            console.log($(this).attr('marker'))
+            if($(this).attr('marker') == 1) {
+                window.location.href = "./pages/order-payment.html?orderId=" + $(this).attr('orderId');
+            } else if($(this).attr('marker') == 2) {
+                window.location.href = "./pages/order-cancel.html?orderid=" + $(this).attr('orderId');
+            } else if ($(this).attr('marker') == 3) {
+                window.location.href = "./pages/evaluate.html?orderId=" + $(this).attr('orderId') + "&auntId=" + $(this).attr("auntId");
+            }
+        })
+
+        $('#order-list').on('click', '.order-detail-jump', function () {
+            window.location.href = "./pages/order-details.html?orderId=" + $(this).attr('orderId');// + '&ordertype=' + $(this).attr('ordertype')
+        })
+
+    })
+</script>
+
+</body>
+</html>

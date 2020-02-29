@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yinafjz.cleaning.user.dao.CategoryDao" >
+
+  <resultMap id="detailMap" type="com.yinafjz.cleaning.user.model.DetailModel">
+  	<id column="attr_id" property="detailId"/>
+  	<result column="goods_id" property="itemId"/>
+  	<result column="attr_name" property="type"/>
+  	<result column="attr_price" property="price"/>
+  	<result column="attr_pic" property="attrPic"/>
+  	<!--<result column="attr_type" property="attrType"/>-->
+  	<result column="remark" property="remark"/>
+  </resultMap>
+  
+  <resultMap id="itemMap" type="com.yinafjz.cleaning.user.model.ItemModel">
+  	<id column="goods_id" property="itemId"/>
+  	<result column="cate_id" property="cateId"/>
+  	<result column="comp_id" property="compId"/>
+  	<result column="goods_name" property="itemName"/>
+  	<result column="goods_pic" property="pic"/>
+  	<result column="goods_intro" property="intro"/>
+  	<result column="goods_scope" property="scope"/>
+  	<result column="goods_process" property="process"/>
+  	<result column="short_introduce" property="shortIntro"/>
+  	<result column="original_price" property="originalPrice"/>
+  	<result column="current_price" property="currentPrice"/>
+  	<result column="goods_sales" property="goodsSales"/>
+  	<result column="goods_type" property="goodsType"/>
+  	<result column="index_type" property="indexType"/>
+  	<result column="is_type" property="isType"/>
+	<result column="goods_details" property="goodsDetails" />
+	<result column="goods_state" property="goodsState" />
+	<result column="is_hot" property="isHot" />
+	<result column="is_cxiao" property="isCxiao" />
+
+  	<collection property="details" select="findAttrByGoods" column="goods_id"></collection>
+  </resultMap>
+  
+  <resultMap id="categoryMap" type="com.yinafjz.cleaning.user.model.CategoryModel">
+  	<id column="cate_id" property="cateId" />
+  	<result column="cate_name" property="cateName"/>
+  	<result column="cate_image" property="cateImage"/>
+  	<result column="cate_icon" property="cateIcon"/>
+  	<result column="is_show" property="isShow"/>
+  	
+   	<collection property="items" resultMap="itemMap"></collection>
+  </resultMap>
+
+  <sql id="cate_list" >
+    cate_id, cate_name, cate_image, cate_icon, is_show
+  </sql>
+  
+  <sql id="item_list">
+  	goods_id, cate_id, goods_name, goods_pic, goods_intro, index_type, goods_sales, is_type,
+  	short_introduce, goods_scope, goods_process, original_price, current_price,goods_details,
+  	goods_state,is_hot,is_cxiao, comp_id, goods_type
+  </sql>
+  
+  <sql id="detail_list">
+  	attr_id, goods_id, attr_name, attr_price, attr_pic, remark
+  </sql>
+  
+  <select id="findBanners" resultType="java.util.Map">
+  	select banner_id id,banner_title title,banner_jump_url url,banner_pic pic
+  	from ynf_homemaking.ynf_banner
+  	where banner_state = 1 
+  	and data_flag = 1
+  	order by update_time desc
+  </select>
+  
+  <select id="findCates" resultMap="categoryMap">
+  	select ysc.cate_id, cate_name, cate_image, cate_icon, is_show, 
+  	goods_id, ifnull(goods_name,'') goods_name, ifnull(goods_pic,'') goods_pic, 
+  	ifnull(goods_intro,'') goods_intro, ifnull(goods_scope,'') goods_scope, ifnull(goods_process,'') goods_process,
+  	ifnull(short_introduce,'') short_introduce, ifnull(original_price,'0') original_price, 
+  	ifnull(current_price,0) current_price, index_type, is_type
+  	from ynf_homemaking.ynf_service_category ysc
+  	left join ynf_homemaking.ynf_service_goods ysg
+  	on ysc.cate_id = ysg.cate_id and ysc.data_flag = 1 and ysg.data_flag = 1 and ysg.goods_type = 1
+  </select>
+  
+  <select id="findIndexCates" resultMap="categoryMap">
+  	select <include refid="cate_list"></include>
+  	from ynf_homemaking.ynf_service_category
+  	where data_flag = 1
+  	and is_show = 1
+  </select>
+  
+  <!-- <select id="findItemsByCatId" resultMap="itemMap">
+  	select <include refid="item_list"></include>
+  	from ynf_homemaking.ynf_service_goods
+  	where cate_id = #{cateId}
+  </select> -->
+  
+  <select id="findItemById" resultMap="itemMap">
+  	select <include refid="item_list"></include>
+  	from ynf_homemaking.ynf_service_goods
+  	where goods_id = #{id}
+  </select>
+  
+  <select id="findDetailByItemId" resultMap="itemMap">
+  	select <include refid="item_list"/>
+	from ynf_homemaking.ynf_service_goods
+    where goods_id = #{itemId}
+    and data_flag = 1
+  </select>
+  
+  <select id="findDetailById" resultMap="detailMap">
+  	select <include refid="detail_list"></include>
+  	from ynf_homemaking.ynf_service_goods_attr
+  	where attr_id = #{dtId}
+  </select>
+  
+  <select id="findIndexType" resultMap="itemMap">
+  	select <include refid="item_list"></include>
+  	from ynf_homemaking.ynf_service_goods
+  	where data_flag = 1 and index_type = #{type}
+  </select>
+  
+  <update id="updateItemSales">
+  	update ynf_homemaking.ynf_service_goods
+  	set goods_sales = goods_sales + #{num}
+  	where goods_id = #{id}
+  </update>
+
+	<select id="findByCondition" resultMap="itemMap">
+		select <include refid="item_list"/>
+		from ynf_homemaking.ynf_service_goods
+		where ${n} = #{v}
+	</select>
+	
+	<select id="findAttrByGoods" resultMap="detailMap">
+		select <include refid="detail_list"/>
+		from ynf_service_goods_attr
+		where goods_id = #{goodsId}
+		and data_flag = 1
+	</select>
+</mapper>

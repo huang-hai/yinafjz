@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>订单</title>
+    <link rel="stylesheet" type="text/css" href="../assets/css/amazeui.min.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/app.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/order.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/message.css">
+</head>
+<body style="width: 100%; height: 100%; background-color: #f4f4f4;">
+<header data-am-widget="header" class="am-header am-header-default index-header-green">
+    <div class="am-header-left am-header-nav" onclick="history.go(-1);">
+        <a href="javascript:;" class="">
+            <i class="am-header-icon am-icon-angle-left index-icon-left"></i>
+        </a>
+    </div>
+    <h1 class="am-header-title">
+        <a class="am-text-1">订单11支付</a>
+    </h1>
+</header>
+
+<div class="am-margin-top-sm am-padding am-padding-bottom-xs am-bg am-header-mg-top" id="detail_box">
+    <!-- <div class="am-text-juxtaposition">
+        <div  class="am-text-juxtaposition-1">
+            <img src="../assets/images/c_1.png" width="100px" />
+        </div>
+        <div class="am-text-juxtaposition-2 am-vertical-top am-padding-left-sm">
+            <h3 class="am-margin-sm">日常保洁</h3>
+            <span class="am-text-sm am-text-error">2小时</span>
+            <p class="am-margin-0 am-padding-vertical am-text-danger">￥400 <span class="am-fr">x1</span></p>
+        </div>
+    </div>
+    <p class="am-margin-0 am-padding-top-sm am-border-top">商品总额 <span class="am-fr">￥400</span></p>
+    <p class="am-margin-0">商品优惠 <span class="am-fr">￥0</span></p>
+    <div class="am-text-right am-margin-vertical-sm am-padding-vertical-sm am-border-top">
+        <span>实付款</span>
+        <span class="am-text-danger">￥400</span>
+    </div> -->
+</div>
+<input id="obj" type="hidden" value="0">
+<div style="display:none;" id="aaabbb" ></div>
+<input id="orderId" type="hidden">
+<div class="am-margin-top-xs am-bg">
+    <div class="am-padding-sm am-border-bottom am-text-color-ash">支付方式</div>
+    <div class="am-padding-sm am-text-color-ash">微信支付<img src="../assets/images/wechat.svg" alt="" />
+        <input class="am-fr" type="radio" name="pay-1" value="wechat">
+    </div>
+    <div class="am-padding-sm am-text-color-ash">支付宝<img src="../assets/images/alipay.jpg" alt="" />
+        <input class="am-fr" type="radio" name="pay-1" value="alipay">
+    </div>
+</div>
+
+<div class="am-text-right am-text-xs am-padding-sm am-text-error">
+    <span class="am-icon-question-circle"></span>
+    取消扣款规则
+</div>
+
+<div class="am-position-bottom" id="btn_submit">
+    <button type="button" class="am-btn am-padding-vertical-sm am-btn-green am-btn-block">确认支付</button>
+</div>
+<script src="../assets/js/jquery.js"></script>
+<script src="../assets/js/amazeui.min.js"></script>
+<script src="../assets/js/app_path.js"></script>
+<script src="../assets/js/popups.js"></script>
+<script src="../assets/js/fastclick.js"></script>
+<script src="../assets/js/common.js"></script>
+<script src="../assets/js/vconsole.min.js"></script>
+<script type="text/javascript">
+    // init vConsole
+//    var vConsole = new VConsole();
+    console.log('Hello world');
+    //重定义sessionStorage.setItem()，用来接收app的数据
+    sessionStorage.setItem = function (key, newVal) {
+        let setItemEvent = new Event('setItemEvent')
+        setItemEvent.key = key
+        setItemEvent.newVal = newVal
+        console.log(key, newVal);
+        document.dispatchEvent(setItemEvent)
+    }
+    var wxpayInfo;
+    var alipayInfo
+    //监听app返回的数据
+    document.addEventListener('setItemEvent', setItemEvent)
+    function setItemEvent(e){
+        if (e.key == 'wxInstalled') {
+            if (e.newVal) {
+                //这里发送数据到给app处理
+                webkit.messageHandlers.cordova_iab.postMessage(JSON.stringify(wxpayInfo));
+            }else{
+                // 找不到微信
+                $('div.loading').remove()
+                // 取消按钮禁用
+                $('#btn_submit').removeAttr('disabled')
+                jqtoast('请安装微信客户端~');
+            }
+            // that.wxInstalled = true
+        }
+        if (e.key == 'paySucceed') {//支付成功
+            if (e.newVal) {
+                $('div.loading').remove()
+
+                jqtoast('订单支付成功')
+
+                setTimeout(function () {
+                    window.location.href = './pay-success.html?orderId=' + $("#orderId").val();
+                }, 500)
+                return
+            }
+            //支付失败
+            $('div.loading').remove()
+            jqtoast('订单支付失败')
+            setTimeout(function () {
+                window.location.href = './pay-error.html?orderId=' + $("#orderId").val();
+            }, 500)
+        }
+    }
+    $(function(){
+        FastClick.attach(document.body);
+        var orderId = getUrlParam("orderId");
+        $("#orderId").val(orderId);
+        var orderNum;
+        function getOrder(){
+
+            var url = "/order/findOrderById?orderId="+orderId+"&"+Math.random();
+            var type = "GET";
+            var params = {};
+            jsAjax(type,url,"",orderCallBack,params);
+
+        }
+
+        function orderCallBack(res){
+            if(res.code == 200){
+                var sb = "";
+                $.each(res.obj.orderServices,function(index,obj){
+                    sb += "<div class=\"am-text-juxtaposition\">                                                                      ";
+                    sb += "    <div  class=\"am-text-juxtaposition-1\">                                                               ";
+                    sb += "        <img src=\""+obj.pic+"\" width=\"100px\" />                                             ";
+                    sb += "    </div>                                                                                               ";
+                    sb += "    <div class=\"am-text-juxtaposition-2 am-vertical-top am-padding-left-sm\">                             ";
+                    sb += "        <h3 class=\"am-margin-sm\">"+res.obj.itemName+"</h3>                                                           ";
+                    sb += "        <span class=\"am-text-sm am-text-error\">"+obj.name+"</span>                                     ";
+                    sb += "        <p class=\"am-margin-0 am-padding-vertical am-text-danger\">￥"+obj.price+" <span class=\"am-fr\">x"+obj.num+"</span></p>";
+                    sb += "    </div>                                                                                               ";
+                    sb += "</div>                                                                                                   ";
+                });
+                sb += "<p class=\"am-margin-0 am-padding-top-sm am-border-top\">商品总额 <span class=\"am-fr\">￥"+res.obj.totalMoney+"</span></p> ";
+                sb += "<p class=\"am-margin-0\">商品优惠 <span class=\"am-fr\">￥"+res.obj.discounts+"</span></p>                                   ";
+                sb += "<div class=\"am-text-right am-margin-vertical-sm am-padding-vertical-sm am-border-top\">               ";
+                sb += "    <span>实付款</span>                                                                              ";
+                sb += "    <span class=\"am-text-danger\">￥"+res.obj.actualPayment+"</span>                                                        ";
+                sb += "</div>                                                                                               ";
+                $("#detail_box").append(sb);
+                orderNum = res.obj.orderNumber;
+                console.log(orderNum);
+            } else {
+                jqtoast(res.msg);
+            }
+        }
+        getOrder();
+
+        // 20181228
+        function orderSubmit (orderId) {
+
+            // 接收原生返回的支付状态
+            window.zfbpayresult = function (data) {
+                //alert(data)
+                if(!data) {
+                    // 没有返回
+                    $('div.loading').remove()
+                    jqtoast('支付错误，请重新支付')
+                    // 取消按钮禁用
+                    $('#btn_submit').removeAttr('disabled')
+                }  else if (data === 'success') {
+                    // 支付成功
+                    $('div.loading').remove()
+                    jqtoast('订单支付成功')
+                    setTimeout(function () {
+                        window.location.href = './pay-success.html?orderId='+$("#orderId").val();
+                    }, 500)
+                } else if (data === 'failure') {
+                    // 支付失败
+                    $('div.loading').remove()
+                    jqtoast('订单支付失败')
+                    setTimeout(function () {
+                        window.location.href = './pay-error.html?orderId='+$("#orderId").val();
+                    }, 500)
+                } else if (data === 'handing') {
+                    // 订单正在处理，只有IOS可能发送这个状态
+                    $('loading span').text('正在处理订单...')
+                } else if (data === 'cancellation') {
+                    $('div.loading').remove()
+                    jqtoast('您已取消支付~')
+                    // 取消按钮禁用
+                    // $('#btn_submit').removeAttr('disabled')
+                }
+            }
+        }
+        //orderSubmit();
+
+        // 20181228
+        $("#btn_submit").on('click', function () {
+            var value = $('input[type="radio"]:checked').val()
+            // 按钮禁用
+            $('#btn_submit').attr('disabled', 'disabled');
+            if(!value){
+                jqtoast('请选择支付方式')
+                $('#btn_submit').removeAttr('disabled')
+            } else if( value === 'wechat' ){
+                $('body').append(loadingStr);
+                var url = "/order/payAttestation";
+                var type = "POST";
+                var data = "orderId="+orderId+"&payWay=1&"+Math.random();
+                var params = {};
+                jsAjax(type,url,data,wechatPayCallBack,params);
+
+            } else if ( value === 'alipay' ){
+                $('body').append(loadingStr);
+                var url = "/order/payAttestation";
+                var type = "POST";
+                var data = "orderId="+orderId+"&payWay=2&"+Math.random();
+                var params = {};
+                jsAjax(type,url,data,alipayCallBack,params);
+
+            }
+
+        })
+
+        var json;
+
+        //微信支付验签回调
+        function wechatPayCallBack(res){
+            if(res.success){
+                json = res;
+                var obj = {
+                    "appid": res.obj.appid,
+                    "noncestr": res.obj.noncestr,
+                    "package": "Sign=WXPay",
+                    "partnerid": res.obj.partnerid,
+                    "prepayid": res.obj.prepayid,
+                    "sign": res.obj.sign,
+                    "timestamp": res.obj.timestamp
+                }
+                wxpayInfo = {
+                    obj: obj,
+                    payway: 1
+                }
+
+                let message = { wxInstalled: 'how is that?' }
+
+                webkit.messageHandlers.cordova_iab.postMessage(JSON.stringify(message));
+                var sb = '';
+                //sb += '{ ';
+                //sb += '    "code": "'+res.code+'",  ';
+                //sb += '    "msg": "'+res.msg+'",   ';
+                //sb += '    "obj": {  ';
+                //sb += '        "appid": "'+res.obj.appid+'",  ';
+                //sb += '        "noncestr": "'+res.obj.noncestr+'", ';
+                //sb += '        "package": "Sign=WXPay", ';
+                //sb += '        "partnerid": "'+res.obj.partnerid+'", ';
+                //sb += '        "prepayid": "'+res.obj.prepayid+'", ';
+                //sb += '        "sign": "'+res.obj.sign+'", ';
+                //sb += '        "timestamp": "'+res.obj.timestamp+'"';
+                //sb += '    },  ';
+                //sb += '    "success":' + res.success;
+                //sb += '} ';
+
+                //$("#obj").val(sb);
+                //$('#aaabbb').attr('respay',JSON.parse(sb));
+                //payInfo();
+                $('body').append(loadingStr);
+                $('div.loading span').text('支付跳转中，请稍等..')
+                // location.href = 'jumpwechat://';
+
+                // window.foundwechat = function (data) {
+                //     if(data == 'found') {
+                //         orderSubmit()
+                //     } else if( data == 'nofound') {
+                //         // 找不到微信
+                //         $('div.loading').remove()
+                //         // 取消按钮禁用
+                //         $('#btn_submit').removeAttr('disabled')
+                //         jqtoast('请安装微信客户端~');
+                //     } else {
+                //         // 支付错误
+                //         $('div.loading').remove()
+                //         jqtoast('支付错误，请重新支付~');
+                //         // 取消按钮禁用
+                //         $('#btn_submit').removeAttr('disabled')
+                //     }
+                // }
+                //orderSubmit()
+            } else {
+                jqtoast(res.msg)
+                $('div.loading').remove()
+            }
+        }
+
+        window.payInfo = function (num) {
+            //var json = eval('(' + $("#obj").val() + ')');
+            //var json = $("#obj").val();
+            //var json = $('#aaabbb').attr('respay');
+            var jsonstr = JSON.stringify(json);
+            //alert(jsonstr);
+            //console.log(jsonstr);
+            if(num == 1){
+                return json;
+            } else {
+                return jsonstr;
+            }
+        }
+
+        //支付宝支付验签回调
+        function alipayCallBack(res){
+            if(res.success){
+                json = res;
+                //var sb = '';
+                //sb += '{   ';
+                //sb += '    "code": "'+res.code+'",';
+                //sb += '    "msg": "'+res.msg+'",';
+                //sb += '    "obj": "'+res.obj+'",';
+                //sb += '    "success": '+res.success;
+                //sb += '}';
+
+                //$('#aaabbb').attr('respay',sb);
+                //payInfo();
+                $('body').append(loadingStr);
+                $('div.loading span').text('支付跳转中，请稍等..')
+
+                var obj = res.obj
+                alipayInfo = {
+                    obj: obj,
+                    payway: 2
+                }
+                webkit.messageHandlers.cordova_iab.postMessage(JSON.stringify(alipayInfo));
+                // let message = { wxInstalled: 'how is that?' }
+
+                // webkit.messageHandlers.cordova_iab.postMessage(JSON.stringify(message));
+
+                // location.href = 'jumpzfb://'
+                //orderSubmit()
+            } else {
+                jqtoast(res.msg)
+                $('div.loading').remove()
+            }
+        }
+    });
+
+    function order_cancel() {
+        // body...
+        window.location.href = "./order-cancel.html"
+    }
+</script>
+</body>
+</html>

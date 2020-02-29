@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<title>首页</title>
+	<link rel="stylesheet" type="text/css" href="./assets/css/amazeui.min.css">
+	<link rel="stylesheet" type="text/css" href="./assets/css/app.css">
+	<link rel="stylesheet" type="text/css" href="./assets/css/dropload.css">
+	<link rel="stylesheet" type="text/css" href="./assets/css/message.css">
+</head>
+<body style="width: 100%; height: 100%; background-color: #f4f4f4;">
+<!-- header -->
+<header data-am-widget="header" class="am-header am-header-default index-header-green">
+	<div class="am-header-left am-header-nav" onclick="goBack()">
+		<a class=""><i class="am-header-icon am-icon-angle-left index-icon-left"></i></a>
+	</div>
+	<h1 class="am-header-title"><a href="pages/location.html" class="index-title-font">定位</a><i class="am-header-icon am-icon-angle-down index-icon-down"></i></h1>
+	<div class="am-header-right am-header-nav">
+		<!-- 有热更新 添加active，没有就移除active -->
+		<a href="./pages/message.html" class="index-icon-bell">
+			<i class="am-header-icon am-icon-bell-o"></i>
+		</a>
+	</div>
+</header>
+<!-- header end -->
+
+<!-- banner -->
+<div class="am-slider am-slider-default" data-am-flexslider id="index_slider">
+	<ul class="am-slides">
+		<!-- <li><img src="assets/images/banner.png" /></li>
+        <li><img src="assets/images/banner_2.png" /></li> -->
+	</ul>
+</div>
+<!-- banner end -->
+<!-- nav -->
+<div class="index-content-wrap">
+	<!-- <ul>
+        <li>
+            <a href="javascript:;">
+                <img src="assets/images/nav_1.png" alt="全屋清洁">
+                <span>全屋清洁</span>
+            </a>
+        </li>
+        <li>
+            <a href="javascript:;">
+                <img src="assets/images/nav_2.png" alt="日常保洁">
+                <span>日常保洁</span>
+            </a>
+        </li>
+        <li>
+            <a href="javascript:;">
+                <img src="assets/images/nav_3.png" alt="客厅保洁">
+                <span>客厅保洁</span>
+            </a>
+        </li>
+        <li>
+            <a href="javascript:;">
+                <img src="assets/images/nav_4.png" alt="厨房清洗">
+                <span>厨房清洗</span>
+            </a>
+        </li>
+        <li>
+            <a href="javascript:;">
+                <img src="assets/images/nav_5.png" alt="卧室清洁">
+                <span>卧室清洁</span>
+            </a>
+        </li>
+    </ul>
+    <ul>
+        <li>
+            <a href="javascript:;">
+                <img src="assets/images/nav_6.png" alt="家电清洗">
+                <span>家电清洗</span>
+            </a>
+        </li>
+        <li>
+            <a href="javascript:;">
+                <img src="assets/images/nav_7.png" alt="除螨清洁">
+                <span>除螨清洁</span>
+            </a>
+        </li>
+        <li>
+            <a href="javascript:;">
+                <img src="assets/images/nav_8.png" alt="家居保养">
+                <span>家居保养</span>
+            </a>
+        </li>
+        <li>
+            <a href="javascript:;">
+                <img src="assets/images/nav_9.png" alt="浴室清洁">
+                <span>浴室清洁</span>
+            </a>
+        </li>
+        <li>
+            <a href="javascript:;">
+                <img src="assets/images/nav_10.png" alt="全部服务">
+                <span>全部服务</span>
+            </a>
+        </li>
+    </ul> -->
+</div>
+<!-- nav end -->
+<!-- content -->
+<div class="index-content">
+	<div class="index-content-left">
+		<!-- <img src="assets/images/c_1.png" alt="">
+        <span>日常保洁</span>
+        <span>仅需20元/小时</span> -->
+	</div>
+	<div class="index-content-right">
+		<div class="up">
+			<!-- <div class="text">
+                <span>深度清洁</span>
+                <span>全屋全面打扫</span>
+            </div>
+            <img src="assets/images/c_2.png" alt=""> -->
+		</div>
+		<div class="down">
+			<!-- <div class="text">
+                <span>空调清洗</span>
+                <span>灭菌去污</span>
+            </div>
+            <img src="assets/images/c_2.png" alt=""> -->
+		</div>
+	</div>
+</div>
+<!-- content end -->
+<!-- goods-list -->
+<div class="index-goods-list">
+	<h5><img src="assets/images/fire.png" alt="" width="12" height="15">精选套餐</h5>
+	<ul id="list_container">
+		<!-- <li>
+            <div class="img-wrap">
+                <img src="assets/images/c_1.png" alt="">
+            </div>
+            <div class="content-wrap">
+                <span>卫生间深度清理套餐</span>
+                <span>无死角消毒，深度杀菌</span>
+                <span>
+                    <i>¥400</i>
+                    <em>原价¥480</em>
+                </span>
+            </div>
+            <div class="content-tip"><span>去体验</span></div>
+        </li> -->
+	</ul>
+</div>
+<!-- goods-list end -->
+
+<!-- footer -->
+<div data-am-widget="navbar" class="am-navbar am-cf am-navbar-default index-footer-white" id="">
+	<ul class="am-navbar-nav am-cf am-avg-sm-4">
+		<li>
+			<a href="/" >
+				<span><img src="assets/images/home_active.png" alt=""></span>
+				<span class="am-navbar-label active-green">首页</span>
+			</a>
+		</li>
+		<li>
+			<a href="classify.html">
+				<span><img src="assets/images/classify.png" alt=""></span>
+				<span class="am-navbar-label">分类</span>
+			</a>
+		</li>
+		<li>
+			<a href="order.html">
+				<span><img src="assets/images/order.png" alt=""></span>
+				<span class="am-navbar-label">订单</span>
+			</a>
+		</li>
+	</ul>
+</div>
+<!-- footer end-->
+<script src="./assets/js/jquery.js"></script>
+<script src="./assets/js/amazeui.min.js"></script>
+<script src="./assets/js/dropload.min.js"></script>
+<script src="./assets/js/popups.js"></script>
+<script src="./assets/js/app_path.js"></script>
+<script src="./assets/js/jquery.cookie.js"></script>
+<script src="./assets/js/common.js"></script>
+<script src="./assets/js/fastclick.js"></script>
+<script src="./assets/js/vconsole.min.js"></script>
+
+<script>
+    //var vConsole = new VConsole();
+    console.log('Hello world');
+    //回退到客户端
+    function goBack(){
+        //e.preventDefault();
+        var message = { backToApp: true }
+        webkit.messageHandlers.cordova_iab.postMessage(JSON.stringify(message));
+    }
+
+    $('#index_slider').flexslider({
+        animationLoop: true,
+        slideshowSpeed: 2000,
+        directionNav: false
+    });
+
+    // 获取定位
+    var geo = new jQuery.AMUI.Geolocation({
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 60000
+    });
+
+    geo.get().then(function (position) {
+        // 成功回调，position 为返回的位置对象
+        var latlon = position.coords.latitude + ',' + position.coords.longitude;
+        var url = 'http://api.map.baidu.com/geocoder/v2/?ak=U1HUz3FnxHcy6zY8W3sYmlnTPHG2zVq3&callback=renderReverse&location=' + latlon + '&output=json&pois=0';
+        console.log(latlon);
+        // 本地存储经纬度信息
+        $.ajax({
+            type: "GET",
+            url: url,
+            async: false,
+            dataType: 'jsonp',
+            beforeSend: function beforeSend() {
+                $('.index-title-font').html('正在定位...');
+            },
+            success: function success(res) {
+                if (res.status == 0) {
+                    var address = res.result.formatted_address;
+                    var adr = address.substring(6,address.length);
+                    $('.index-title-font').html(adr);
+                    console.log("地理位置："+res.result.formatted_address);
+                    localStorage.setItem("region",res.result.formatted_address);
+                    localStorage.setItem('address', latlon);
+                }
+                if (res.status == 'OK') {
+                    var result = res.result;
+                    $.each(result, function (index, array) {
+                        if (index == 0) {
+                            var locationStr = array['formatted_address']
+                            $('.index-title-font').html(locationStr);
+                        }
+                    });
+                }
+            },
+            error: function error(err) {
+                $('.index-title-font').html('地址位置获取失败');
+                //localStorage.setItem('address', 0);
+                //localStorage.setItem("region",-1);
+                var region = localStorage.getItem("region");
+                console.log(region);
+                if(region != "" && region != null){
+                    $('.index-title-font').html(region.substring(region.indexOf("省")+1,region.length));
+                } else {
+                    jqalert({
+                        title: "提示",
+                        content: "定位失败，手动添加地址？",
+                        yestext: "确定",
+                        notext: "取消",
+                        yesfn: function(){
+                            window.location.href = "./pages/location.html"
+                        },
+                        nofn: function(){
+                        }
+                    });
+                }
+            }
+        });
+    }, function (err) {
+        // 不支持或者发生错误时回调，err 为错误提示信息
+        // console.log(err)
+        $('.index-title-font').html('地址位置获取失败');
+        // 用户定位信息为空
+        //localStorage.setItem('address', 0);
+        //localStorage.setItem("region",-1);
+        var region = localStorage.getItem("region");
+        console.log(region);
+        if(region != "" && region != null){
+            $('.index-title-font').html(region.substring(region.indexOf("省")+1,region.length));
+        } else {
+            jqalert({
+                title: "提示",
+                content: "定位失败，手动添加地址？",
+                yestext: "确定",
+                notext: "取消",
+                yesfn: function(){
+                    window.location.href = "./pages/location.html"
+                },
+                nofn: function(){
+                }
+            });
+        }
+    });
+
+
+    $(function () {
+        $.cookie('sessionId',1);;
+        FastClick.attach(document.body);
+        window.localStorage.removeItem("orderId");
+        app_path = getRootPath();
+        getCombos();
+        getCates();
+        getRecommends();
+        getNotReaderNum();
+        $('#list_container').dropload({
+            scrollArea: window,
+            domDown: {
+                domClass: 'dropload-down',
+                domRefresh: '<div class="dropload-refresh">上拉加载更多</div>',
+                domLoad: '<div class="dropload-load">正在加载中...</div>',
+                domNoData: '<div class="dropload-noData">-已经到底了-</div>'
+            },
+            loadDownFn: function loadDownFn(me) {
+                //   page++
+                // getList(me)
+            }
+        });
+
+        function toGoodsDetail() {
+            $('#list_container').on('click', 'li', function () {
+                // 跳转商品详情
+                window.location.href = './pages/goods-detail.html?id=' + $(this).attr("itemId");
+            });
+        }
+
+        toGoodsDetail();
+    });
+
+    //获取广告
+    function getBanners(){
+        var url = "/service/findBanners";
+        var type = "GET";
+        var params = {};
+        jsAjax(type,url,"",bannersCallBack,params,true);
+    }
+
+    function bannersCallBack(res){
+        if(res.code == 200){
+            var sb = "";
+            $.each(res.obj,function(i,j){
+                sb = sb + "<li class=\"banner\"><img src=\""+j.pic+"\" url=\""+j.url+"\"/></li>";
+            });
+            $(".am-slides").append(sb);
+            $("#index_slider").flexslider({
+                animationLoop:true,
+                slideshowSpeed:2000,
+                directionNav:false
+            });
+        }
+    }
+    getBanners();
+
+    $(".am-slides").on("click","li",function(){
+        var url = $(this).children("img").attr("url");
+        if(url != "" && url != undefined){
+            window.location.href = url;
+        }
+    });
+
+    //获取精选套餐
+    function getCombos(){
+        var url = "/service/findCombos";
+        var type = "GET";
+        var params = {};
+        jsAjax(type,url,"",comboxCallBack,params,true);
+    }
+
+    function comboxCallBack(res){
+        if(res.code == '200'){
+            $.each(res.obj,function(i,j){
+                var strHtml = '';
+                strHtml = '<li itemId="'+j.itemId+'"><div class="img-wrap"><img src="'+j.pic+'" alt=""></div><div class="content-wrap"><span>'+j.itemName+'</span>\
+							<span>'+j.shortIntro+'</span><span><i>¥'+j.currentPrice+'</i><em>原价¥'+j.originalPrice+'</em></span>\
+							</div><div class="content-tip"><span>去体验</span></div></li>'
+                setTimeout( function(){
+                    $('#list_container').prepend(strHtml);
+                    if(i >= 2){   // 根据 page
+                        $(".dropload-load").html('-已经到底了-');
+                    }
+                }, 1000);
+            });
+            //if(me){me.resetload();}
+        } else {
+            console.log(res.msg);
+        }
+    }
+
+    //获取服务分类列表
+    function getCates(){
+        var url = "/service/findIndexCates";
+        var type = "GET";
+        var params = {};
+        jsAjax(type,url,"",catesCallBack,params,true);
+    }
+
+    function catesCallBack(res){
+        if(res.code == '200'){
+            var strHtml = '';
+            $.each(res.obj,function(i,j){
+                if(i == 0){
+                    strHtml += '<ul><li cateId="'+j.cateId+'"><a href="javascript:;">\
+							<img src="'+j.cateIcon+'" alt="'+j.cateName+'">\
+							<span>'+j.cateName+'</span></a></li>';
+                } else {
+                    if(i % 5 == 0){
+                        strHtml += '</ul><ul><li cateId="'+j.cateId+'"><a href="javascript:;">\
+							<img src="'+j.cateIcon+'" alt="'+j.cateName+'">\
+							<span>'+j.cateName+'</span></a></li>';
+                    } else {
+                        strHtml += '<li cateId="'+j.cateId+'"><a href="javascript:;">\
+							<img src="'+j.cateIcon+'" alt="'+j.cateName+'">\
+							<span>'+j.cateName+'</span></a></li>';
+                    }
+                }
+            });
+            strHtml += '<li cateId="0"><a href="javascript:;">\
+				<img src="assets/images/nav_10.png" alt="全部服务">\
+				<span>全部服务</span></a></li></ul>';
+            $('.index-content-wrap').append(strHtml).show();
+        } else {
+            console.log(res.msg);
+        }
+    }
+
+    $(".index-content-wrap").on("click","li",function(){
+        var cateId = $(this).attr("cateId");
+        window.location.href = './classify.html?cateId=' + cateId;
+    });
+
+    //获取推荐服务项
+    function getRecommends(){
+        var url = "/service/findRecommends";
+        var type = "GET";
+        var params = {};
+        jsAjax(type,url,"",recommendsCallBack,params,true);
+    }
+
+    function recommendsCallBack(res){
+        if(res.code == '200'){
+            var strHtml = '';
+            $.each(res.obj,function(i,j){
+                if(i == 0){
+                    strHtml += '<div class="index-content-left" onclick="toUrl('+j.itemId+')">\
+						<img src="'+j.pic+'" alt="'+j.itemName+'">\
+						<span>'+j.itemName+'</span>\
+						<span>'+j.shortIntro+'</span></div>';
+                }
+                if(i == 1){
+                    strHtml += '<div class="index-content-right"><div class="up" onclick="toUrl('+j.itemId+')">\
+						<div class="text">\
+						<span>'+j.itemName+'</span>\
+						<span>'+j.shortIntro+'</span></div>\
+						<img src="'+j.pic+'" alt="'+j.itemName+'"></div>';
+                }
+                if(i == 2){
+                    strHtml += '<div class="down" onclick="toUrl('+j.itemId+')"><div class="text">\
+						<span>'+j.itemName+'</span>\
+						<span>'+j.shortIntro+'</span></div>\
+						<img src="'+j.pic+'" alt="'+j.itemName+'"></div></div>';
+                }
+            });
+            $('.index-content').html(strHtml).show();
+        } else {
+            console.log(res.msg);
+        }
+    }
+
+    function toUrl(itemId){
+        // 跳转商品详情
+        window.location.href = './pages/goods-detail.html?id=' + itemId;
+    }
+
+    function getNotReaderNum(){
+        var userId = getUser();
+        if(userId == 0){
+            jqtoast("您还未登录，请登录");
+            var sessionId = getUrlParam('sessionId');
+            applogin(sessionId)
+            return;
+        }
+        var url = "/user/findNotReaderNumByUserId?userId="+userId+"&"+Math.random();
+        var type = "GET";
+        var params = {};
+        jsAjax(type,url,"",notReaderNumCallBack,params,true);
+    }
+
+    function notReaderNumCallBack(res){
+        if(res.code == 200){
+            if(res.obj > 0){
+                $(".index-icon-bell").addClass("active");
+            } else {
+                $(".index-icon-bell").removeClass("active");
+            }
+        }
+    }
+
+    var sessionId = getUrlParam('sessionId');
+
+    // var ssId= location.href.split('sessionId=')[1]
+    // console.warn('sessionId:'+sessionId)
+    // console.warn(location.href)
+    // applogin(sessionId);
+    function applogin(sessionId){
+        // alert(sessionId);
+        //var url = "/user/applogin?sessionId="+sessionId+"&"+Math.random();
+        //var type = "GET";
+        //var params = {};
+        //jsAjax(type,url,"",loginCallback,params);
+
+        $.ajax({
+            type: "GET",
+            url: getRootPath() + "/user/applogin",
+            data: {"sessionId":sessionId},
+            dataType: "json",
+            success: function(res){
+                if(!res.success){
+                    jqtoast(res.msg);
+                }
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

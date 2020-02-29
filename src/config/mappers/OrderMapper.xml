@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yinafjz.cleaning.order.dao.OrderDao" >
+
+  <resultMap id="orderServiceMap" type="com.yinafjz.cleaning.order.model.OrderServiceModel">
+  	<id column="order_attr_id" property="osId"/>
+  	<result column="order_id" property="orderId"/>
+  	<result column="attr_id" property="dtId"/>
+  	<result column="num" property="num"/>
+  	<result column="attr_name" property="name"/>
+  	<result column="attr_price" property="price"/>
+  	<result column="attr_pic" property="pic"/>
+  </resultMap>
+  
+  <resultMap id="auntMap" type="com.yinafjz.cleaning.user.model.AuntModel">
+	<id column="aunt_id" property="auntId"/>
+	<result column="user_name" property="userName"/>
+	<result column="true_name" property="trueName"/>
+	<result column="aunt_image" property="auntImage"/>
+	<result column="auth_type" property="authType"/>
+	<result column="aunt_type" property="auntType"/>
+  </resultMap>
+  
+  <resultMap id="evaluationMap" type="com.yinafjz.cleaning.user.model.EvaluationModel"
+   autoMapping="true">
+  	<!--<id column="eval_id" property="evalId"/>-->
+  	<!--<result column="user_id" property="userId"/>-->
+  	<!--<result column="order_id" property="orderId"/>-->
+  	<!--<result column="eval" property="eval"/>-->
+  	<!--<result column="opinion" property="opinion"/>-->
+  	<!--<result column="aunt_id" property="auntId"/>-->
+  </resultMap>
+  
+  <resultMap id="orderMap" type="com.yinafjz.cleaning.order.model.OrderModel">
+  	<id column="order_id" property="orderId" />
+  	<result column="user_id" property="userId"/>
+  	<result column="nanny_id" property="nannyId"/>
+  	<result column="coupon_id" property="couponId"/>
+  	<result column="order_num" property="orderNumber"/>
+  	<result column="service_time" property="serviceTime"/>
+  	<result column="pay_time" property="payTime"/>
+  	<result column="total_money" property="totalMoney"/>
+  	<result column="discounts" property="discounts"/>
+  	<result column="pay_money" property="actualPayment"/>
+  	<result column="remark" property="remark"/>
+  	<result column="order_status" property="state"/>
+  	<result column="cancel_cause" property="cancelCause"/>
+  	<result column="order_type" property="orderType"/>
+
+  	<result column="goods_id" property="itemId"/>
+  	<result column="goods_name" property="itemName"/>
+  	<result column="pay_status" property="payStatus"/>
+  	<result column="pay_way" property="payWay"/>
+  	<result column="attemper_status" property="attemperStatus"/>
+  	<result column="aunt_id" property="auntId"/>
+  	<result column="pay_type" property="payType"/>
+  	<result column="pay_num" property="payNum"/>
+  	<result column="customer" property="customer"/>
+  	<result column="phone" property="phone"/>
+  	<result column="region" property="region"/>
+  	<result column="address" property="address"/>
+  	<result column="origin" property="origin"/>
+  	<result column="complete_time" property="completeTime"/>
+  	<result column="evaluate_time" property="evaluateTime"/>
+  	<result column="create_time" property="createTime"/>
+  	<result column="update_time" property="updateTime"/>
+  	<result column="begin_time" property="beginTime"/>
+  	<result column="end_time" property="endTime"/>
+  	
+  	<collection property="orderServices" resultMap="orderServiceMap"></collection>
+  </resultMap>
+  
+	
+  <sql id="order_list" >
+    order_id, user_id,coupon_id,order_type, order_num, service_time, total_money,
+    discounts, pay_money, remark, order_status, cancel_cause,
+    goods_id, goods_name, pay_status, pay_way, pay_type, aunt_id,
+    pay_num, customer, phone, region, address, origin, attemper_status,
+    date_format(pay_time,'%Y-%m-%d %H:%i:%s') as pay_time, 
+    date_format(complete_time,'%Y-%m-%d %H:%i:%s') as complete_time, 
+    date_format(evaluate_time,'%Y-%m-%d %H:%i:%s') as evaluate_time, 
+    date_format(create_time,'%Y-%m-%d %H:%i:%s') as create_time, 
+    date_format(update_time,'%Y-%m-%d %H:%i:%s') as update_time 
+  </sql>
+  
+  <sql id="aunt_list">
+  	aunt_id, user_name, true_name, aunt_image, auth_type, aunt_type
+  </sql>
+  
+  <sql id="order_service_list">
+  	order_attr_id,order_id,attr_id,num,attr_name,attr_price,attr_pic
+  </sql>
+  
+  <sql id="evalutaion_list">
+  	eval_id, user_id, order_id, aunt_id, nanny_id, eval, opinion, goods_id,user_name,
+  	date_format(create_time,'%Y-%m-%d %H:%i:%s') as create_time
+  </sql>
+
+  <insert id="addOrder" parameterType="com.yinafjz.cleaning.order.model.OrderModel">
+  	<selectKey keyProperty="orderId" order="AFTER" resultType="java.lang.Integer">
+        select LAST_INSERT_ID()
+    </selectKey>
+  	insert into ynf_homemaking.ynf_order(user_id,coupon_id,order_type,order_num,service_time,
+  	pay_time,total_money,discounts,pay_money,remark,order_status,cancel_cause,
+  	goods_id,goods_name,pay_status,pay_way,pay_type,pay_num,customer,attemper_status,
+  	phone,region,address,origin,complete_time,evaluate_time,begin_time,end_time,create_time)
+  	
+  	values(#{userId},#{couponId},#{orderType},#{orderNumber},#{serviceTime},#{payTime},#{totalMoney},#{discounts},
+  	#{actualPayment},#{remark},#{state},#{cancelCause},
+  	#{itemId},#{itemName},#{payStatus},#{payWay},#{payType},
+  	#{payNum},#{customer},#{attemperStatus},#{phone},#{region},#{address},
+  	#{origin},#{completeTime},#{evaluateTime},#{beginTime},#{endTime},now())
+  </insert>
+  
+  <insert id="addOrderService" parameterType="com.yinafjz.cleaning.order.model.OrderServiceModel">
+  	<selectKey keyProperty="osId" order="AFTER" resultType="java.lang.Integer">
+        select LAST_INSERT_ID()
+    </selectKey>
+  	insert into ynf_homemaking.ynf_order_attr(order_id,attr_id,num,attr_name,attr_price,attr_pic,create_time)
+  	values(#{orderId},#{dtId},#{num},#{name},#{price},#{pic},now())
+  </insert>
+  
+  <select id="findOrderByState" resultMap="orderMap">
+  	select <include refid="order_list"></include>
+  	from ynf_homemaking.ynf_order
+    where user_id = #{userId}
+    and data_flag = 1
+    <if test="state != -1">
+	    and order_status = #{state}
+    </if>
+    order by create_time desc
+  </select>
+  
+  <select id="findOrderById" resultMap="orderMap">
+  	select yo.order_id, user_id, coupon_id,order_type,order_num, service_time, total_money,
+    discounts, pay_money, remark, order_status, cancel_cause,nanny_id,
+    goods_id, goods_name, pay_status, pay_way, pay_type, aunt_id,
+    pay_num, customer, phone, region, address, origin, attemper_status,
+    date_format(begin_time,'%Y-%m-%d %H:%i:%s') as begin_time, 
+    date_format(pay_time,'%Y-%m-%d %H:%i:%s') as pay_time, 
+    date_format(complete_time,'%Y-%m-%d %H:%i:%s') as complete_time, 
+    date_format(evaluate_time,'%Y-%m-%d %H:%i:%s') as evaluate_time, 
+    date_format(yo.create_time,'%Y-%m-%d %H:%i:%s') as create_time, 
+    date_format(update_time,'%Y-%m-%d %H:%i:%s') as update_time ,
+    
+    order_attr_id,attr_id,num,attr_name,attr_price,attr_pic
+    from ynf_homemaking.ynf_order yo
+    inner join ynf_homemaking.ynf_order_attr yoa
+    on yo.order_id = yoa.order_id
+    where yo.order_id = #{orderId}
+    and yoa.data_flag = 1
+    and yo.data_flag = 1
+  </select>
+  
+  <select id="findOrderByNum" resultMap="orderMap">
+  	select yo.order_id, user_id,coupon_id, order_type,order_num, service_time, total_money,
+    discounts, pay_money, remark, order_status, cancel_cause,
+    goods_id, goods_name, pay_status, pay_way, pay_type, aunt_id,
+    pay_num, customer, phone, region, address, origin, attemper_status,
+    date_format(begin_time,'%Y-%m-%d %H:%i:%s') as begin_time, 
+    date_format(pay_time,'%Y-%m-%d %H:%i:%s') as pay_time, 
+    date_format(complete_time,'%Y-%m-%d %H:%i:%s') as complete_time, 
+    date_format(evaluate_time,'%Y-%m-%d %H:%i:%s') as evaluate_time, 
+    date_format(yo.create_time,'%Y-%m-%d %H:%i:%s') as create_time, 
+    date_format(update_time,'%Y-%m-%d %H:%i:%s') as update_time ,
+    
+    order_attr_id,attr_id,num,attr_name,attr_price,attr_pic
+    from ynf_homemaking.ynf_order yo
+    inner join ynf_homemaking.ynf_order_attr yoa
+    on yo.order_id = yoa.order_id
+    where yo.order_num = #{orderNum}
+    and yoa.data_flag = 1
+    and yo.data_flag = 1
+  </select>
+  
+  <update id="editState">
+  	update ynf_homemaking.ynf_order
+  	set order_status = #{state}
+  	where order_id = #{orderId}
+  </update>
+  
+  <update id="cancelOrder">
+  	update ynf_homemaking.ynf_order
+  	set order_status = 4, attemper_status = 4, cancel_cause = #{cancelCause}
+  	where order_id = #{orderId}
+  </update>
+  
+  <select id="findAuntById" resultMap="auntMap">
+  	select aunt_id, user_name, true_name, aunt_image, auth_type, aunt_type
+  	from ynf_homemaking.ynf_aunt 
+  	where aunt_id = #{id}
+  </select>
+  
+  <select id="findOrderReceNum" resultType="Integer">
+  	select count(1) from ynf_homemaking.ynf_order
+	where begin_time &lt; #{begintime} 
+	and end_time &gt; #{begintime} 
+	and attemper_status in (1,2)
+  </select>
+  
+  <select id="findAuntCount" resultType="Integer">
+  	select count(aunt_id) 
+  	from ynf_homemaking.ynf_aunt 
+	where data_flag = 1 
+	and aunt_type = 1 
+	and  work_state = 1 
+	and community_id = #{id}
+  </select>
+  
+ <!--  <select id="findComplete" resultType="java.util.Map">
+  	select 
+  </select> -->
+  
+  <insert id="addEvaluation" parameterType="com.yinafjz.cleaning.user.model.EvaluationModel">
+  	<selectKey keyProperty="evalId" order="AFTER" resultType="java.lang.Integer">
+        select LAST_INSERT_ID()
+    </selectKey>
+  	insert into ynf_homemaking.ynf_service_evaluation(user_id,order_id,eval,opinion,aunt_id,goods_id,nanny_id,user_name,create_time)
+  	values(#{userId},#{orderId},#{eval},#{opinion},#{auntId},#{goodsId},#{nannyId},#{userName},now())
+  </insert>
+  
+  <update id="editEvaluateTime">
+  	update ynf_homemaking.ynf_order
+  	set evaluate_time = now()
+  	where order_id = #{orderId}
+  </update>
+
+	<select id="findByCondition" resultMap="evaluationMap">
+		select <include refid="evalutaion_list"/>
+		from ynf_homemaking.ynf_service_evaluation
+		where ${name} = #{val} and data_flag = 1
+		<if test="eval != null and eval != ''">
+			and eval in (${eval})
+		</if>
+	</select>
+</mapper>

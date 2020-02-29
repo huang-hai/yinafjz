@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<title>分类</title>
+	<link rel="stylesheet" type="text/css" href="./assets/css/amazeui.min.css">
+	<link rel="stylesheet" type="text/css" href="./assets/css/app.css">
+	<style type="text/css">
+		.disabled { pointer-events: none; z-index: 1;}
+		.enabled { z-index: 1000;}
+	</style>
+</head>
+<body style="width: 100%; height: 100%; background-color: #f4f4f4;">
+	<!-- header -->
+	<header data-am-widget="header" class="am-header am-header-default index-header-green">
+		<div class="am-header-left am-header-nav" onclick="javascript:history.go(-1);">
+			<a href="javascript:;" class=""><i class="am-header-icon am-icon-angle-left index-icon-left"></i></a>
+		</div>
+		<h1 class="am-header-title"><a href="#title-link" class="index-title-font">分类</a></h1>
+		<div class="am-header-right am-header-nav"></div>
+	</header>
+  	<!-- header end -->
+	<div class="classify-content">
+		<div class="container">
+			<ul class="classify-nav" id="classify_nav">
+				<!-- <li class="classify-active"><a href="javascript:;">家电清洗</a></li>
+				<li class=""><a href="javascript:;">家居保养</a></li>
+				<li class=""><a href="javascript:;">全屋保洁</a></li>
+				<li class=""><a href="javascript:;">日常保洁</a></li>
+				<li class=""><a href="javascript:;">除螨清洁</a></li>
+				<li class=""><a href="javascript:;">厨房清洁</a></li>
+				<li class=""><a href="javascript:;">客厅保洁</a></li>
+				<li class=""><a href="javascript:;">浴室保洁</a></li>
+				<li class=""><a href="javascript:;">卧室保洁</a></li> -->
+			</ul>
+			<div class="classify-list">
+				<div class="classify-image">
+					<!-- <img src="assets/images/banner_2.png" alt=""> -->
+				</div>
+				<div class="classify-group">
+					<!-- <ul id="classify_group">
+						<li><a href="javascript:;"><img src="assets/images/c_1.png" alt=""><span>空调</span></a></li> 
+						<li><a href="javascript:;"><img src="assets/images/c_1.png" alt=""><span>冰箱</span></a></li>
+						<li><a href="javascript:;"><img src="assets/images/c_1.png" alt=""><span>洗衣机</span></a></li>
+						<li><a href="javascript:;"><img src="assets/images/c_1.png" alt=""><span>油烟机</span></a></li>
+					</ul> -->
+				</div>
+			</div>
+	  	</div>
+	</div>
+
+	<!-- footer -->
+	<div data-am-widget="navbar" class="am-navbar am-cf am-navbar-default index-footer-white" id="">
+		<ul class="am-navbar-nav am-cf am-avg-sm-4">
+		  <li>
+		    <a href="index.html" >
+		        <span><img src="assets/images/home.png" alt=""></span>
+		        <span class="am-navbar-label">首页</span>
+		    </a>
+		  </li>
+		  <li>
+		    <a href="classify.html">
+		        <span><img src="assets/images/classify_active.png" alt=""></span>
+		        <span class="am-navbar-label active-green">分类</span>
+		    </a>
+		  </li>
+		  <li>
+		    <a href="order.html">
+		        <span><img src="assets/images/order.png" alt=""></span>
+		        <span class="am-navbar-label">订单</span>
+		    </a>
+		  </li>
+		</ul>
+	</div>
+	<!-- footer end-->
+	<script src="./assets/js/jquery.js"></script>
+	<script src="./assets/js/amazeui.min.js"></script>
+	<script src="./assets/js/app_path.js"></script>
+	<script src="./assets/js/common.js"></script>
+	<script src="./assets/js/fastclick.js"></script>
+	
+	<script>
+		var cateId = getUrlParam("cateId");	
+		$(function () {
+			FastClick.attach(document.body);    
+			
+			window.localStorage.removeItem("orderId");
+			function getCats () {
+				var url = "/service/findCates?"+Math.random();
+				var type = "GET";
+				var params = {};
+				jsAjax(type,url,"",catsCallBack,params,true);
+			}
+			getCats();
+			
+			function catsCallBack(res) {
+				if(res.code == 200){
+					var navStr = '';
+					var listStr = '';
+					var bannerStr = '';
+					$.each (res.obj, function(index,obj){
+						navStr += "<li class=\"";
+						if(cateId != 0 && cateId != null){
+							if(cateId == obj.cateId){
+								navStr += "classify-active";
+							}
+						} else {
+							if(index == 0){
+						    	navStr += "classify-active";
+							}
+						}
+				    	navStr += "\" cateid=\""+obj.cateId+"\"><a href=\"javascript:;\">" + obj.cateName + "</a></li>";
+						bannerStr += "<img src=\"" + obj.cateImage + "\" style=\"height: inherit;\" alt=\"\" class=\"";
+						if(cateId != 0 && cateId != null){
+							if(cateId == obj.cateId){
+								bannerStr += "active";
+							}
+						} else {
+							if(index == 0){
+								bannerStr += "active";
+							}
+						}
+						bannerStr += "\" cateid=\""+obj.cateId+"\">";
+						listStr += "<ul name=\""+index+"\" class=\"";
+						//单击事件被遮住的解决办法用样式：默认是禁用单击事件
+						var clickStyle = "disabled";
+						if(cateId != 0 && cateId != null){
+							if(cateId == obj.cateId){
+								listStr += "active";
+								clickStyle = "enabled";
+							}
+						} else {
+							if(index==0){
+								listStr += "active";
+								clickStyle = "enabled";
+							} else {
+								clickStyle = "disabled";
+							}
+						}
+						listStr += "\" cateid=\""+obj.cateId+"\">";
+						$.each(obj.items, function (i,o) {
+							listStr += "<li class=\""+clickStyle+"\" itemId=\""+o.itemId+"\"><a href=\"javascript:;\"><img src=\""+o.pic+"\" alt=\"\"><span>";
+							listStr += o.itemName + "</span></a></li>";
+						})
+						listStr += "</ul>";
+						
+					})
+					
+					$('#classify_nav').append(navStr);
+					$('.classify-group').append(listStr);
+					$('.classify-image').append(bannerStr);
+				} else {
+					console.log(res.msg);
+				}
+			}
+			
+			
+			$(".classify-group").on("click","li",function(){
+				// 跳转商品详情
+				window.location.href = './pages/goods-detail.html?id=' + $(this).attr("itemId");
+			});
+			
+			// 切换
+			function navClick() {
+				$('#classify_nav').on('click', 'li', function (item, index) {
+					$(this).addClass('classify-active').siblings().removeClass('classify-active');
+					$('.classify-group ul').removeClass('active').eq($(this).index()).addClass('active');
+					$('.classify-image img').removeClass('active').eq($(this).index()).addClass('active');
+					// 单击事件被遮住的解决办法
+					$('.classify-group ul li').addClass('disabled').removeClass("enabled");
+					$('.classify-group ul').eq($(this).index()).children("li").removeClass("disabled").addClass("enabled");
+				});
+			}
+			navClick();
+		});
+		
+		//function init(){
+		//	var cateId = getUrlParam("cateId");	
+		//	//先去除所有li的样式
+		//	$("#classify_nav li").removeClass("classify-active");
+		//	//在查找所对应的分类id添加样式
+		//	$("#classify_nav").children("li[cateid='"+cateId+"']").addClass("classify-active");
+		//	
+		//	$(".classify-image img").removeClass("active");
+		//	$(".classify-image").children("img[cateid='"+cateId+"']").addClass("active");
+		//	
+		//	$(".classify-group ul").removeClass("active");
+		//	$(".classify-group").children("ul[cateid='"+cateId+"']").addClass("active");
+		//}
+		//
+		//init();
+		
+	</script>
+</body>
+</html>

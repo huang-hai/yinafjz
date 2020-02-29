@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yinafjz.cleaning.user.dao.MsgDao" >
+
+	<resultMap id="msgMap" type="com.yinafjz.cleaning.user.model.MsgModel">
+	    <id column="msg_id" property="msgId" />
+	    <result column="user_id" property="userId"/>
+	    <result column="msg_type" property="msgType"/>
+	    <result column="msg_img" property="msgImg"/>
+	    <result column="msg_title" property="msgTitle"/>
+	    <result column="msg_content" property="msgContent"/>
+	    <result column="create_time" property="createTime"/>
+	    <result column="is_reader" property="isReader"/>
+  	</resultMap>
+  	
+  	<sql id="msg_list">
+  		msg_id,user_id,msg_title,msg_content,msg_type,msg_img,is_reader,
+  		date_format(create_time,'%Y-%m-%d %H:%i:%s') as create_time
+  	</sql>
+
+  	
+  	<insert id="addMsg" parameterType="com.yinafjz.cleaning.user.model.MsgModel">
+  		insert into ynf_homemaking.ynf_msg(user_id,msg_type,msg_img,msg_title,
+  		msg_content,is_reader,create_time)
+  		values(#{userId},#{msgType},#{msgImg},#{msgTitle},#{msgContent},#{isReader},now())
+  	</insert>
+  	
+  	<insert id="addAuntMsg" parameterType="com.yinafjz.cleaning.user.model.MsgModel">
+  		insert into ynf_homemaking.ynf_aunt_msg(aunt_id,msg_type,msg_head,order_num,msg_content,is_read,data_flag,create_time)
+  		values(#{userId},#{msgType},#{msgTitle},#{msgImg},#{msgContent},#{isReader},1,now())
+  	</insert>
+  	
+  	<select id="findMsgsByUserId" resultMap="msgMap">
+  		select <include refid="msg_list"></include>
+  		from ynf_homemaking.ynf_msg
+  		where data_flag = 1
+  		and msg_type = #{type}
+  		<if test="type == 0">
+	  		and user_id = #{userId}
+  		</if>
+  		order by create_time desc
+  	</select>
+  	
+  	<select id="findNotReaderByUserId" resultType="java.lang.Integer">
+  		select count(msg_id)
+  		from ynf_homemaking.ynf_msg
+  		where data_flag = 1
+  		and is_reader = 0
+  		and user_id = #{userId}
+  	</select>
+  	
+  	<update id="markRead">
+  		update ynf_homemaking.ynf_msg
+  		set is_reader = 1
+  		where user_id = #{userId}
+  	</update>
+</mapper>

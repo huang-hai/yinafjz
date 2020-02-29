@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<title>服务地址</title>
+	<link rel="stylesheet" type="text/css" href="../assets/css/amazeui.min.css">
+	<link rel="stylesheet" type="text/css" href="../assets/css/app.css">
+	<link rel="stylesheet" type="text/css" href="../assets/css/dropload.css">
+	<link rel="stylesheet" type="text/css" href="../assets/css/LArea.css">
+	<link rel="stylesheet" type="text/css" href="../assets/css/message.css">
+</head>
+<body style="width: 100%; height: 100%; background-color: #f4f4f4;">
+	<!-- 地址列表 -->
+	<div class="address-list-wrap">
+		<!-- header -->
+		<header data-am-widget="header" class="am-header am-header-default index-header-green">
+			<div class="am-header-left am-header-nav" onclick="history.back();return false;">
+				<a href="#left-link" class=""><i class="am-header-icon am-icon-angle-left index-icon-left"></i></a>
+			</div>
+			<h1 class="am-header-title"><a href="#title-link" class="index-title-font">服务地址管理</a></h1>
+			<div class="am-header-right am-header-nav"></div>
+		</header>
+	  	<!-- header end -->
+		
+		<!-- search -->
+		<!-- <div class="address-search">
+			<div class="search-btn" onclick="mapShow()"><i class="am-icon-search"></i>搜索小区</div>
+			<div class="search-btn"><i class="am-icon-map-marker"></i><span id="map_maker">地址</span></div>
+		</div> -->
+		<!-- search end -->
+	  	<!-- address -->
+	  	<div class="address-content">
+	  		<h5>我的地址</h5>
+	  		<ul class="address-list">
+			 <!-- 默认地址 active -->
+	  			<!-- <li class="address-item radio-active">
+	  				<ul>
+	  					<li>
+	  						<span class="radio-btn-wrap"><i class="radio-btn"></i>名字</span>
+	  						<span>15258523562</span>
+	  						<span><i class="am-icon-edit"></i></span>
+	  					</li>
+	  					<li class="address-detail">地址</li>
+	  				</ul>
+	  			</li> -->
+	  		</ul>
+	  		<div class="empty-show">
+	  			<img src="../assets/images/none.png" alt="" width="120" />
+	  			<span>您还没有服务地址，快去添加地址吧</span>
+	  		</div>
+	  	</div>
+	  	<!-- address end-->
+	  	<!-- button -->
+	  	<div class="button-wrap">
+	  		<button type="button" class="am-btn am-btn-default am-btn-block" onclick="show()">添加地址</button>
+	  	</div>
+	  	<!-- button end-->
+	</div>
+	<!-- 地址列表 end-->
+	
+	<!-- 新增地址 -->
+	<div class="add-address-wrap" id="add_address_wrap">
+		<div class="wrap">
+			<header data-am-widget="header" class="am-header am-header-default index-header-green">
+				<div class="am-header-left am-header-nav" onclick="hide()">
+					<a href="javascript:;" class=""><i class="am-header-icon am-icon-angle-left index-icon-left"></i></a>
+				</div>
+				<h1 class="am-header-title"><a href="#title-link" class="index-title-font">添加地址</a></h1>
+				<div class="am-header-right am-header-nav"></div>
+			</header>
+			<div class="address-edit">
+				<ul>
+					<li><label>  联 系 人</label><input class="server-name" type="text" name="add_receiver" value="" placeholder="请填写预约联系人"></li>
+					<li><label>手机号码</label><input class="server-tel" type="text" name="add_phone" value="" placeholder="请填写联系电话"></li>
+					<li class="address-server">
+						<label>服务地址</label>
+						<span><input readonly class="address-server-select server-select" placeholder="请选择"  id=""><i class="am-icon-angle-right"></i></span>
+						<input class="address-server-list addAddr" type="hidden" />
+					</li>
+					<li><textarea name="add_address" placeholder="详细地址：如某小区7号楼1单元1205" rows="2" cols="42" class="server-address" ></textarea></li>
+					<li>提示： 请仔细填写地址，以便保洁员上门服务</li>
+				</ul>
+			</div>
+			<div class="button-wrap">
+		  		<button type="button" class="am-btn am-btn-default am-btn-block" id="new_save_btn">保存</button>
+		  	</div>
+		</div>
+	</div>
+	<!-- 新增地址 end-->
+
+	<!-- 编辑地址 -->
+	<div class="add-address-wrap edit-address-wrap" id="edit_address_wrap">
+		<div class="wrap">
+			<header data-am-widget="header" class="am-header am-header-default index-header-green">
+				<div class="am-header-left am-header-nav" onclick="hideEdit()">
+					<a href="javascript:;" class=""><i class="am-header-icon am-icon-angle-left index-icon-left"></i></a>
+				</div>
+				<h1 class="am-header-title"><a href="#title-link" class="index-title-font">修改地址</a></h1>
+				<div class="am-header-right am-header-nav"><i class="am-icon-trash-o" id="del_btn"></i></div>
+			</header>
+			<div class="address-edit">
+				<ul>
+					<li><label>  联 系 人</label><input type="text" class="server-name"  name="edit_receiver" value="" placeholder="请填写预约联系人"></li>
+					<li><label>手机号码</label><input type="text" class="server-tel" name="edit_phone" value="" placeholder="请填写联系电话"></li>
+					<li class="address-server">
+						<label>服务地址</label>
+						<span><input readonly class="address-server-select edit-server-select" placeholder="请选择"  id="edit_server_address"><i class="am-icon-angle-right"></i></span>
+						<input class="address-server-list editAddr" type="hidden" />
+						<input type="hidden" name="auId">
+					</li>
+					<li><textarea name="edit_address" placeholder="详细地址：如某小区7号楼1单元1205" rows="2" cols="42" class="server-address"></textarea></li>
+					<li>提示： 请仔细填写地址，以便保洁员上门服务</li>
+				</ul>
+			</div>
+			<div class="button-wrap">
+		  		<button type="button" class="am-btn am-btn-default am-btn-block" id="edit_save_btn">保存</button>
+		  	</div>
+		</div>
+	</div>
+	<!-- 编辑地址 end-->
+	<div class="loading" style="display: none;"><img src="../assets/images/loading.svg" /><span>加载中..</span></div>
+
+	<script src="../assets/js/jquery.js"></script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script src="../assets/js/LAreaData2.js"></script>
+	<script src="../assets/js/LArea.js"></script>
+	<script src="../assets/js/popups.js"></script>
+	<script src="../assets/js/app_path.js"></script>
+	<script src="../assets/js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.7&key=3917b0c9b921b6c0d6dbd235298a0099"></script>
+	<script src="../assets/js/common.js"></script>
+	<script src="../assets/js/fastclick.js"></script>
+	
+	<script>
+	
+		// 小区数据格式
+		//const serverData_2 = [{
+		//	"id": 1,
+		//	"name": "海西百悦城1期海西百悦城1期期期期期"
+		//},{
+		//	"id": 2,
+		//	"name": "海西百悦城1期期期"
+		//},{
+		//	"id": 3,
+		//	"name": "海西百悦城1期期期"
+		//},{
+		//	"id": 4,
+		//	"name": "海西百悦城1期期期"
+		//},{
+		//	"id": 5,
+		//	"name": "海西百悦城1期期期"
+		//},{
+		//	"id": 6,
+		//	"name": "海西百悦城1期期期"
+		//}]
+		
+		function hide () {
+			$('#add_address_wrap').hide()
+		}
+		function show () {
+			$('#add_address_wrap').show()
+		}
+		function hideEdit() {
+			$('#edit_address_wrap').hide()
+		}
+		
+		var serverData;
+		
+		//获取小区列表
+		function getCommunitys(){
+			var url = "/user/findCommunitys?"+Math.random();
+			var type = "GET";
+			var params = {};
+			jsAjax(type,url,"",communitysCallBack,params,false);
+		}
+		
+		function communitysCallBack(res){
+			if(res.code == 200){
+				serverData = res.obj;
+			} else {
+				jqtoast(res.msg);
+			}
+		}
+		getCommunitys();
+		
+		var serverAddress = new LArea()
+		serverAddress.init({
+			'trigger': ['.server-select'],
+			'valueTo': '.addAddr',
+			'keys': {
+				id: 'id',
+				name: 'name'
+			},
+			'type': 1,
+			'data': serverData
+		})
+
+		var edit_serverAddress = new LArea()
+		edit_serverAddress.init({
+			'trigger': ['.edit-server-select'],
+			'valueTo': '.editAddr',
+			'keys': {
+				id: 'id',
+				name: 'name'
+			},
+			'type': 1,
+			'data': serverData
+		})
+
+		$( function () {
+			FastClick.attach(document.body);
+			userId = getUser();
+			if(userId == 0){
+				jqtoast("您还未登录，请登录");
+				return;
+			}
+			// 获取用户地址列表
+			function getList() {
+				var url = "/user/findAddress?userId="+userId+"&"+Math.random();
+				var type = "GET";
+				var params = {};
+				jsAjax(type,url,"",listCallBack,params,true);
+			}
+			
+			function listCallBack(res) {
+				if(res.code == 200){
+					var list = res.obj;
+					var str = '';
+					$.each(list, function (index, item) {
+						str += '<li class="' + (item.defcode ? 'address-item radio-active' : 'address-item') + '"><ul><li><span class="radio-btn-wrap" id="'+item.auId+'"><i class="radio-btn"></i>' + item.receiver + '</span><span class="phone-num">' + (item.phone.substr(0, 3) + '****' + item.phone.substr(7)) + '</span><span><i class="am-icon-edit" auId='+item.auId+'></i></span></li><li class="address-detail">' + item.region + item.communityName + item.address + '</li></ul></li>';
+					});
+					$('.address-list').append(str);
+				} else {
+					console.log(res.msg);
+				}
+
+				// 是否显示空页面
+				if (!$('.address-list li').length) {
+					$('.empty-show').show();
+				}
+			}
+			
+			getList()
+
+			// 修改默认地址
+			$('.address-list').on('click', '.radio-btn-wrap', function (item) {
+				// 当前index
+				console.log($(this).attr("id"))
+				var id = $(this).attr("id");
+				//var userId = getUser();
+				if(userId == 0){
+					jqtoast("您还未登录，请登录");
+					return;
+				}
+				
+				var url = "/user/editDefaultAddr";
+				var type = "POST";
+				var data = "userId="+userId+"&adId="+id+"&"+Math.random();
+				var params = {};
+				params["id"] = id;
+				jsAjax(type,url,data,editDefaultCallBack,params,true);
+			})
+			
+			function editDefaultCallBack(res,params){
+				if(res.code == 200){
+					var address = $(".address-item");
+					$.each(address,function(index,obj){
+						$(obj).removeClass('radio-active');
+					});
+					var id = params["id"];
+					$("[id="+id+"]").parents('.address-item').addClass('radio-active');
+					//$(this).parents('.address-item').addClass('radio-active').siblings().removeClass('radio-active');
+					//返回上一页
+					setTimeout(function(){
+						history.back();
+					},500);
+				} else {
+					console.log(res.msg);
+				}
+			}
+
+			// 编辑地址 回显
+			$('.address-list').on('click', '.am-icon-edit', function () {
+				// alert($(this).parents('.address-item').index())
+				console.log("编辑地址id：" + $(this).attr("auId"));
+				var auId = $(this).attr("auId");
+				
+				var url = "/user/findAddressById?auId="+auId+"&"+Math.random();
+				var type = "GET";
+				var params = {};
+				jsAjax(type,url,"",showAddrCallBack,params,false);
+				
+				$('#edit_address_wrap').show();
+			})
+			
+			function showAddrCallBack(res){
+				if(res.code == 200){
+					var data = res.obj;
+					$("input[name='edit_receiver']").val(data.receiver);
+					$("input[name='edit_phone']").val(data.phone);
+					$("[name='edit_address']").val(data.address);
+					$("input[name='auId']").val(data.auId);
+					//edit_serverAddress.value=[data.communityId];
+					$("#edit_server_address").val(data.communityName);
+					$(".editAddr").val(data.communityId);
+				}
+			}
+		
+		
+			// 保存数据普通验证
+			function savaAdrData () {
+				var name = "" ; //= $('.server-name').val();
+				var phone = "" ; //= $('.server-tel').val();
+				var city = localStorage.getItem("region") ; //=$('.address-select').val();
+				var adr  = "" ; //= $('.server-address').val();
+				//var userId = getUser();
+				if(userId == 0){
+					jqtoast("您还未登录，请登录");
+					return;
+				}
+				var	communityId = 0;
+				var auId = 0;
+				if($("input[name='auId']").val() != "" && $("input[name='auId']").val() != undefined){
+					//编辑
+					name = $("input[name='edit_receiver']").val();
+					phone = $("input[name='edit_phone']").val();
+					adr = $("[name='edit_address']").val();
+					auId = $("input[name='auId']").val();
+					communityId = $(".editAddr").val();
+				} else {
+					//新增
+					name = $("input[name='add_receiver']").val();
+					phone = $("input[name='add_phone']").val();
+					adr = $("[name='add_address']").val();
+					communityId = $(".addAddr").val();
+				}
+	
+				if( !name ){
+				    jqtoast('请输入联系人')
+				    return;
+				} else if(!phone) {
+					jqtoast('请输入手机号码')
+				    return;
+				} else if(!(/^1[345678]\d{9}$/.test(phone))){
+					jqtoast('请输入正确的手机号')
+				    return;
+				} else if(!adr) {
+					jqtoast('请填写详细地址')
+				    return;
+				} else if(city == -1 || city == "null" || city == undefined){
+					jqtoast('定位失败，无法添加')
+					return;
+				}
+				
+				//var params = {};
+				//params["userId"] = userId;
+				//params["auId"] = auId;
+				//params["receiver"] = name;
+				//params["phone"] = phone;
+				//params["region"] = city;//.replace(/ /g,"-");
+				//params["address"] = adr;
+				//params["communityId"] = communityId;
+				
+				var url = "/user/addOrEditAddress";
+				var type = "POST";
+				var data = "userId="+userId+"&auId="+auId+"&receiver="+name+"&phone="+phone+"&region="+city+"&address="+adr+"&communityId="+communityId+"&"+Math.random();
+				var params = {};
+				jsAjax(type,url,data,savaAdrDataCallBack,params,false);
+			}
+			
+			function savaAdrDataCallBack(res){
+				jqtoast(res.msg);
+				if(res.code == 200){
+					setTimeout(function () {
+						window.location.reload();
+					}, 1000);
+				} 
+			}
+			
+			// 新增地址
+			function saveNewAdr() {
+				$('#new_save_btn').on('click', function () {
+					/*console.log($('#new_address').val())
+					let name = $('.server-name').val();
+					let tel = $('.server-tel').val();
+					let city =$('.address-select').val();
+					let adr = $('.server-address').val();*/
+					savaAdrData()
+				})
+			}
+			saveNewAdr()
+
+			// 编辑地址 
+			function saveEditAdr() {
+				$('#edit_save_btn').on('click', function () {
+					savaAdrData()
+				})
+			}
+			saveEditAdr()
+	
+			// 删除
+			function delAdr () {
+				$('#del_btn').on('click', function () {
+					if($("input[name='auId']").val() != "" && $("input[name='auId']").val() != undefined){
+						jqalert({
+					        title: '提示',
+					        content: '确定删除？',
+					        yestext: '确定',
+					        notext: '取消',
+					        yesfn: function() {
+					        	// 删除 。。
+								var auId = $("input[name='auId']").val();
+								var url = "/user/delAddress";
+								var type = "POST";
+								var data = "id="+auId+"&"+Math.random();
+								var params = {};
+								jsAjax(type,url,data,delAddressCallBack,params,false);
+					        },
+					        nofn: function() {
+					            
+					        }
+				    	})
+					}
+				})
+			}
+			delAdr()
+			
+			function delAddressCallBack(res){
+		        jqtoast(res.msg);
+		        setTimeout(function(){
+			        if(res.code == 200){
+			        	window.location.reload();
+			        }
+		        },500);
+			}
+		})
+	</script>
+</body>
+</html>

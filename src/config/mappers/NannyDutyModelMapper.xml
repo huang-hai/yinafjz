@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yinafjz.cleaning.nanny.dao.NannyDutyModelMapper" >
+  <resultMap id="BaseResultMap" type="com.yinafjz.cleaning.nanny.model.NannyDutyModel" >
+    <id column="duty_id" property="dutyId" jdbcType="INTEGER" />
+    <result column="nanny_id" property="nannyId" jdbcType="INTEGER" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="DATE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    duty_id, nanny_id, state, create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from ynf_nanny_duty
+    where duty_id = #{dutyId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ynf_nanny_duty
+    where duty_id = #{dutyId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.yinafjz.cleaning.nanny.model.NannyDutyModel" >
+    <selectKey resultType="java.lang.Integer" keyProperty="dutyId" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ynf_nanny_duty (nanny_id, state, create_time
+      )
+    values (#{nannyId,jdbcType=INTEGER}, #{state,jdbcType=INTEGER}, #{createTime,jdbcType=DATE}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.yinafjz.cleaning.nanny.model.NannyDutyModel" >
+    <selectKey resultType="java.lang.Integer" keyProperty="dutyId" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ynf_nanny_duty
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="nannyId != null" >
+        nanny_id,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="nannyId != null" >
+        #{nannyId,jdbcType=INTEGER},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yinafjz.cleaning.nanny.model.NannyDutyModel" >
+    update ynf_nanny_duty
+    <set >
+      <if test="nannyId != null" >
+        nanny_id = #{nannyId,jdbcType=INTEGER},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=DATE},
+      </if>
+    </set>
+    where duty_id = #{dutyId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yinafjz.cleaning.nanny.model.NannyDutyModel" >
+    update ynf_nanny_duty
+    set nanny_id = #{nannyId,jdbcType=INTEGER},
+      state = #{state,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=DATE}
+    where duty_id = #{dutyId,jdbcType=INTEGER}
+  </update>
+
+  <select id="findOnDutyCount" resultType="int">
+    select count(*) from ynf_homemaking.ynf_nanny_duty
+    where nanny_id = #{nannyId} and state = 1
+  </select>
+</mapper>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource"></ref>
+		</property>
+		<property name="mapperLocations" value="classpath*:config/mappers/**/*.xml" />
+		<property name="plugins">
+			<bean class="com.github.pagehelper.PageInterceptor">
+				<property name="properties">
+					<value>
+						helperDialect=mysql
+						reasonable=true
+					</value>
+				</property>
+			</bean>
+		</property>
+		<property name="configLocation" value="classpath:config/mybatis-config.xml"></property>
+	</bean>
+	<!-- <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean> -->
+	
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.yinafjz.cleaning.*.dao" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+	</bean>
+	
+</beans>

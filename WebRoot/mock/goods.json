@@ -1,0 +1,31 @@
+{	
+	"id": 0,
+	"title": "日常保洁",
+	"text": "日常的全屋保洁+擦窗，物超所值",
+	"type": 0,
+	"banner": "../assets/images/goods_banner.png",
+	"price": 40,
+	"price_list": {
+		"time_title": "时间",
+		"price_title": "服务价格",
+		"area": "建议清洁面积",
+		"list": [
+			{
+				"time": "2",
+				"price": "40",
+				"area": ""
+			},
+			{
+				"time": "3",
+				"price": "60",
+				"area": ""
+			},
+			{
+				"time": "4",
+				"price": "80",
+				"area": ""
+			}
+		]
+	},
+	"des_img": "../assets/images/goods_2.jpg"
+}
